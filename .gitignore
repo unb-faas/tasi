@@ -1,0 +1,14 @@
+credentials
+.terraform*
+*.tfstate*
+*.zip
+*.tmp
+*.csv
+*.log
+*url_*
+data/*
+swagger.json
+swagger-temp.json
+data
+.env
+.DS_Store

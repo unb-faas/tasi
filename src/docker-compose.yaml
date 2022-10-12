@@ -1,0 +1,68 @@
+version: '3.5'
+
+networks:
+  default:
+
+services:
+
+  findpapers:
+    container_name: "tasi-findpapers-${ENVIRONMENT}"
+    build: 
+      context: ./findpapers
+      dockerfile: Dockerfile
+    image: tasiframework/findpapers
+    restart: always
+    ports:
+      - "${FINDPAPERS_PORT}:8000"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+    volumes:
+      - /usr/logs/findpapers:/tmp/logs
+    links: 
+      - database
+    networks:
+      default:
+
+  backend:
+    container_name: "tasi-backend-${ENVIRONMENT}"
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    image: tasiframework/backend
+    restart: always
+    ports:
+      - "${BACKEND_PORT}:4001"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+      - REACT_APP_PORT=4001
+      - REACT_APP_BACKEND_URL=${BACKEND_URL}
+      - DB_USER=${POSTGRES_USER}
+      - DB_PASS=${POSTGRES_PASSWORD}
+      - DB_NAME=${POSTGRES_DB}
+      - DB_PORT=${DATABASE_PORT}
+      - DB_HOST=${DATABASE_HOST}
+    volumes:
+      - ./data/csvs:/csvs
+      - ./data/jsons:/jsons
+      - /usr/logs/backend:/tmp/logs
+    links: 
+      - database
+    networks:
+      default:
+        
+  database:
+    image: postgres:13-alpine
+    container_name: "tasi-database-${ENVIRONMENT}"
+    restart: always
+    ports:
+      - "${DATABASE_PORT}:5432" 
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/database:/var/lib/postgresql/data
+    networks:
+      default:
