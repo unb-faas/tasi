@@ -5,7 +5,7 @@ import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@
 
 // ----------------------------------------------------------------------
 
-FactorialDesignListHead.propTypes = {
+WordreplaceListHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
@@ -15,7 +15,7 @@ FactorialDesignListHead.propTypes = {
   onSelectAllClick: PropTypes.func
 };
 
-export default function FactorialDesignListHead({
+export default function WordreplaceListHead({
   order,
   orderBy,
   rowCount,

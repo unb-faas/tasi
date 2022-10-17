@@ -24,19 +24,18 @@ import { withSnackbar } from '../../hooks/withSnackbar';
 
 // ----------------------------------------------------------------------
 
-const ProviderForm = (props)=> {
+const WordreplaceForm = (props)=> {
   const navigate = useNavigate();
   const {id} = useParams()
   const operation = (id) ? "Update" : "Create"
   const [data, setData] = useState({
       id:null,
-      name:null,
-      acronym:null,
-      active:0
+      target:null,
+      replace:null,
   })
 
   const getData = () =>{
-    api.get(`provider/${id}`).then(res=>{
+    api.get(`wordreplace/${id}`).then(res=>{
         setData(res.data)
     }).catch(e=>{
         props.showMessageError(`Request failed ${e}`)
@@ -51,8 +50,8 @@ const ProviderForm = (props)=> {
   
 
   const RegisterSchema = Yup.object().shape({
-    name: Yup.string().required('Name required').max(255, 'Too Long!'),
-    acronym: Yup.string().required('Acronym required').max(10, 'Too Long!'),
+    target: Yup.string().required('Target required').max(255, 'Too Long!'),
+    replace: Yup.string().required('Replace required').max(255, 'Too Long!'),
   });
 
   const formik = useFormik({
@@ -61,19 +60,17 @@ const ProviderForm = (props)=> {
     validationSchema: RegisterSchema,
     onSubmit: (data) => {
         const payload = {
-            name:data.name,
-            acronym:data.acronym,
-            active:data.active
-        }
+            target:data.target,
+            replace:data.replace        }
         if(data.id){
-            api.put(`provider/${data.id}`,payload).then(res=>{
-                props.showMessageSuccess("Provider updated!")
-                navigate('/dashboard/providers', { replace: true })
+            api.put(`wordreplace/${data.id}`,payload).then(res=>{
+                props.showMessageSuccess("Wordreplace updated!")
+                navigate('/dashboard/wordreplace', { replace: true })
             })
         } else {
-            api.post(`provider`,payload).then(res=>{
-                props.showMessageSuccess("Provider created!")
-                navigate('/dashboard/providers')
+            api.post(`wordreplace`,payload).then(res=>{
+                props.showMessageSuccess("Wordreplace created!")
+                navigate('/dashboard/wordreplace')
             })
         }
     }
@@ -82,11 +79,11 @@ const ProviderForm = (props)=> {
   const { errors, touched, handleSubmit, isSubmitting, getFieldProps } = formik;
 
   return (
-    <Page title="Form Provider | Tasi Framework">
+    <Page title="Form Wordreplace | Tasi Framework">
         <Container>
             <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
                 <Typography variant="h4" gutterBottom>
-                {operation} Provider
+                {operation} Wordreplace
                 </Typography>
             </Stack>
             <Card>
@@ -98,39 +95,24 @@ const ProviderForm = (props)=> {
                                     <TextField
                                         InputLabelProps={{ shrink: true }} 
                                         fullWidth
-                                        autoComplete="name"
+                                        autoComplete="target"
                                         type="string"
-                                        label="Name"
-                                        {...getFieldProps('name')}
-                                        error={Boolean(touched.name && errors.name)}
-                                        helperText={touched.name && errors.name}
+                                        label="Target"
+                                        {...getFieldProps('target')}
+                                        error={Boolean(touched.target && errors.target)}
+                                        helperText={touched.target && errors.target}
                                     />
                                         
                                     <TextField
                                         InputLabelProps={{ shrink: true }} 
                                         fullWidth
-                                        autoComplete="acronym"
+                                        autoComplete="replace"
                                         type="string"
-                                        label="Acronym"
-                                        {...getFieldProps('acronym')}
-                                        error={Boolean(touched.acronym && errors.acronym)}
-                                        helperText={touched.acronym && errors.acronym}
+                                        label="Replace"
+                                        {...getFieldProps('replace')}
+                                        error={Boolean(touched.replace && errors.replace)}
+                                        helperText={touched.replace && errors.replace}
                                     />
-
-                                    <TextField
-                                        select
-                                        InputLabelProps={{ shrink: true }} 
-                                        fullWidth
-                                        autoComplete="active"
-                                        type="string"
-                                        label="Active"
-                                        {...getFieldProps('active')}
-                                        error={Boolean(touched.active && errors.active)}
-                                        helperText={touched.active && errors.active}
-                                    >
-                                        <MenuItem value="1">Yes</MenuItem>
-                                        <MenuItem value="0">No</MenuItem>
-                                    </TextField>
 
                                     <LoadingButton
                                         fullWidth
@@ -163,4 +145,4 @@ const ProviderForm = (props)=> {
     </Page>
   );
 }
-export default withSnackbar(ProviderForm)
+export default withSnackbar(WordreplaceForm)

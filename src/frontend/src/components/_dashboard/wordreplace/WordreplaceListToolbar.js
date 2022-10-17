@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
-import playCircleFilled from '@iconify/icons-ant-design/play-circle-filled';
+import trash2Fill from '@iconify/icons-eva/trash-2-fill';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
 // material
 import { styled } from '@material-ui/core/styles';
@@ -39,21 +39,13 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-BenchmarkListToolbar.propTypes = {
+WordreplaceListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func
 };
 
-export default function BenchmarkListToolbar(props) {
-  const { numSelected, filterName, onFilterName, selected, setSelected, playBenchmark } = props
-
-  const handlePlaySelected = () =>{
-    selected.forEach(element=>{
-      playBenchmark(element)
-    })
-  }
-
+export default function WordreplaceListToolbar({ numSelected, filterName, onFilterName }) {
   return (
     <RootStyle
       sx={{
@@ -68,27 +60,31 @@ export default function BenchmarkListToolbar(props) {
           {numSelected} selected
         </Typography>
       ) : (
-        <Box>
-          <SearchStyle
-            value={filterName}
-            onChange={onFilterName}
-            placeholder="Search benchmark..."
-            startAdornment={
-              <InputAdornment position="start">
-                <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />
-              </InputAdornment>
-            }
-          /> 
-        </Box>
+        <SearchStyle
+          value={filterName}
+          onChange={onFilterName}
+          placeholder="Search word..."
+          startAdornment={
+            <InputAdornment position="start">
+              <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />
+            </InputAdornment>
+          }
+        />
       )}
 
-      {numSelected > 0 && (
-        <Tooltip title="Play">
-          <IconButton onClick={handlePlaySelected}>
-            <Icon icon={playCircleFilled} />
+      {/* {numSelected > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton>
+            <Icon icon={trash2Fill} />
           </IconButton>
         </Tooltip>
-      )}
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton>
+            <Icon icon={roundFilterList} />
+          </IconButton>
+        </Tooltip>
+      )} */}
     </RootStyle>
   );
 }

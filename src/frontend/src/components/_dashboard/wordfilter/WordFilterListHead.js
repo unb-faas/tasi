@@ -5,7 +5,7 @@ import { Box, Checkbox, TableRow, TableCell, TableHead, TableSortLabel } from '@
 
 // ----------------------------------------------------------------------
 
-BenchmarkListHead.propTypes = {
+WordFilterListHead.propTypes = {
   order: PropTypes.oneOf(['asc', 'desc']),
   orderBy: PropTypes.string,
   rowCount: PropTypes.number,
@@ -15,7 +15,7 @@ BenchmarkListHead.propTypes = {
   onSelectAllClick: PropTypes.func
 };
 
-export default function BenchmarkListHead({
+export default function WordFilterListHead({
   order,
   orderBy,
   rowCount,

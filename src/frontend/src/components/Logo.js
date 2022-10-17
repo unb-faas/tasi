@@ -9,5 +9,5 @@ Logo.propTypes = {
 };
 
 export default function Logo({ sx }) {
-  return <Box component="img" src="/static/tasi-logo.svg" style={{ width: "99%", height: "99%", ...sx }} />;
+  return <Box component="img" src="/static/tasi-logo.svg" style={{ width: "80%", height: "80%", ...sx }} />;
 }

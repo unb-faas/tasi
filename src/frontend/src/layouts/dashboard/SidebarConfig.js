@@ -1,10 +1,9 @@
 import { Icon } from '@iconify/react';
 import pieChart2Fill from '@iconify/icons-eva/pie-chart-2-fill';
-import cloudFilled from '@iconify/icons-ant-design/cloud-filled';
-import toolsIcon from '@iconify/icons-bi/tools';
-import testIcon from '@iconify/icons-grommet-icons/test';
-import percentIcon from '@iconify/icons-bi/percent';
-
+import databaseFilled from '@iconify/icons-ant-design/database-filled';
+import filterFilled from '@iconify/icons-ant-design/filter-filled';
+import editOutlined from '@iconify/icons-ant-design/edit-outlined';
+import fileSearchOutlined from '@iconify/icons-ant-design/file-search-outlined';
 // ----------------------------------------------------------------------
 
 const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
@@ -16,24 +15,24 @@ const sidebarConfig = [
     icon: getIcon(pieChart2Fill)
   },
   {
-    title: 'providers',
-    path: '/dashboard/providers',
-    icon: getIcon(cloudFilled)
+    title: 'Word Replace',
+    path: '/dashboard/wordreplace',
+    icon: getIcon(editOutlined)
   },
   {
-    title: 'use cases',
-    path: '/dashboard/usecases',
-    icon: getIcon(toolsIcon)
+    title: 'Word Filter',
+    path: '/dashboard/wordfilter',
+    icon: getIcon(filterFilled)
   },
   {
-    title: 'benchmarks',
-    path: '/dashboard/benchmarks',
-    icon: getIcon(testIcon)
+    title: 'Search Databases',
+    path: '/dashboard/searchdatabases',
+    icon: getIcon(databaseFilled)
   },
   {
-    title: 'factorial designs',
-    path: '/dashboard/factorialDesigns',
-    icon: getIcon(percentIcon)
+    title: 'Search',
+    path: '/dashboard/search',
+    icon: getIcon(fileSearchOutlined)
   }
 ];
 

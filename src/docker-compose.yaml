@@ -5,6 +5,20 @@ networks:
 
 services:
 
+  frontend:
+    container_name: "tasi-frontend-${ENVIRONMENT}"
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: tasiframework/frontend
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+      - REACT_APP_PORT=3000
+      - REACT_APP_BACKEND_URL=${BACKEND_URL}
+      
   findpapers:
     container_name: "tasi-findpapers-${ENVIRONMENT}"
     build: 

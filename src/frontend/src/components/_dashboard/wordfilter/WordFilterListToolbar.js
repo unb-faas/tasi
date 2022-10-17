@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import { Icon } from '@iconify/react';
 import searchFill from '@iconify/icons-eva/search-fill';
-import trash2Fill from '@iconify/icons-eva/trash-2-fill';
 import roundFilterList from '@iconify/icons-ic/round-filter-list';
 import outlineRefresh from '@iconify/icons-ic/outline-refresh';
+import cloudComputer from '@iconify/icons-grommet-icons/cloud-computer';
+import documentHeaderRemove24Regular from '@iconify/icons-fluent/document-header-remove-24-regular';
 import { Link as RouterLink } from 'react-router-dom';
 
 
@@ -44,13 +45,15 @@ const SearchStyle = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-FactorialDesignListToolbar.propTypes = {
+WordFilterListToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
   onFilterName: PropTypes.func
 };
 
-export default function FactorialDesignListToolbar({ numSelected, filterName, onFilterName, getData }) {
+export default function WordFilterListToolbar(props) {
+  const { numSelected, filterName, onFilterName} = props
+  
   return (
     <RootStyle
       sx={{
@@ -69,7 +72,7 @@ export default function FactorialDesignListToolbar({ numSelected, filterName, on
           <SearchStyle
             value={filterName}
             onChange={onFilterName}
-            placeholder="Search factorial design..."
+            placeholder="Search word..."
             startAdornment={
               <InputAdornment position="start">
                 <Box component={Icon} icon={searchFill} sx={{ color: 'text.disabled' }} />
@@ -78,20 +81,6 @@ export default function FactorialDesignListToolbar({ numSelected, filterName, on
           /> 
         </Box>
       )}
-
-      {/* {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <Icon icon={trash2Fill} />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <Icon icon={roundFilterList} />
-          </IconButton>
-        </Tooltip>
-      )} */}
     </RootStyle>
   );
 }

@@ -1,18 +1,15 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
+import { sentenceCase } from 'change-case';
 import { useState, useEffect } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
-import outlineCancel from '@iconify/icons-ic/outline-cancel';
-import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
 import { Link as RouterLink } from 'react-router-dom';
 // material
 import {
   Card,
   Table,
   Stack,
-  Box,
-  Grid,
+  Avatar,
   Button,
   Checkbox,
   TableRow,
@@ -21,28 +18,27 @@ import {
   Container,
   Typography,
   TableContainer,
-  TablePagination,
-  CircularProgress
+  TablePagination
 } from '@material-ui/core';
 // components
 import Page from '../../components/Page';
+import Label from '../../components/Label';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
-import { FactorialDesignListHead, FactorialDesignListToolbar, FactorialDesignMoreMenu } from '../../components/_dashboard/factorialDesign';
-import {api} from '../../services';
+import { WordreplaceListHead, WordreplaceListToolbar, WordreplaceMoreMenu } from '../../components/_dashboard/wordreplace';
 import { withSnackbar } from '../../hooks/withSnackbar';
+
+
+import {api} from '../../services';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'date', label: 'Date', alignRight: false },
-  { id: 'benchmarks', label: 'Benchmarks', alignRight: false, sortable: false },
+  { id: 'target', label: 'Target', alignRight: false },
+  { id: 'replace', label: 'Replace', alignRight: false },
   { id: '' }
 ];
-
-const moment = require('moment');  
 
 // ----------------------------------------------------------------------
 
@@ -56,24 +52,61 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-const FactorialDesign = (props) => {
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function applySortFilter(array, comparator, query) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  if (query) {
+    return filter(array, (_data) => _data.target.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+  }
+  return stabilizedThis.map((el) => el[0]);
+}
+
+const Wordreplaces = (props) => {
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState(localStorage.getItem('wordreplace-order') ? localStorage.getItem('wordreplace-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
-  const [filterName, setFilterName] = useState('');
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordreplace-order-by') ? localStorage.getItem('wordreplace-order-by') : 'name');
+  const [filterName, setFilterName] = useState(localStorage.getItem('wordreplace-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('wordreplace-rows-per-page') ? localStorage.getItem('wordreplace-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
-  const [statuses, setStatuses] = useState({});
   const [total, setTotal] = useState(0);
+
+
+  
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+    localStorage.setItem('wordreplace-order', isAsc ? 'desc' : 'asc');
+    localStorage.setItem('wordreplace-order-by', property);
     setControl(!control)
   };
+
+  const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
+    const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,"filterName":filterName}
+    api.list('wordreplace','backend',params).then(res=>{
+      setDATALIST(res.data.data)
+      setTotal(res.data.total)
+    }).catch(e=>{
+      props.showMessageError(`Request failed ${e}`)
+    })
+  }
+
+  useEffect(() => {
+    getData(page,rowsPerPage,orderBy,order,filterName)
+  },[control]);
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -83,18 +116,6 @@ const FactorialDesign = (props) => {
     }
     setSelected([]);
   };
-
-  const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
-    const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,"filterName":filterName}
-    api.list('factorialDesign','backend',params).then(res=>{
-      setDATALIST(res.data.data)
-      setTotal(res.data.total)
-    })
-  }
-
-  useEffect(() => {
-    getData(page,rowsPerPage,orderBy,order,filterName)
-  },[control]); 
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -115,53 +136,62 @@ const FactorialDesign = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
+    localStorage.setItem('wordreplace-page', event.target.value);
     setPage(newPage);
+    getData(newPage,rowsPerPage)
     setControl(!control)
   };
 
   const handleChangeRowsPerPage = (event) => {
+    localStorage.setItem('wordreplace-rows-per-page', parseInt(event.target.value,10));
+    getData(0,parseInt(event.target.value, 10))
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setControl(!control)
   };
 
   const handleFilterByName = (event) => {
+    localStorage.setItem('wordreplace-search', event.target.value);
     setFilterName(event.target.value);
+    setPage(0);
     setControl(!control)
   };
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - DATALIST.length) : 0;
 
+  const filteredWordreplaces = applySortFilter(DATALIST, getComparator(order, orderBy), filterName);
+
+  const isWordreplacesNotFound = filteredWordreplaces.length === 0;
+
+
+
   return (
-    <Page title="Use Cases | Tasi Framework">
+    <Page title="Word Replace | Tasi Framework">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Factorial Designs
+            Word Replace
           </Typography>
-
           <Button
             variant="contained"
             component={RouterLink}
             to="create"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Design
+            New Word
           </Button>
         </Stack>
 
         <Card>
-          <FactorialDesignListToolbar
+          <WordreplaceListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
-            getData={getData}
           />
-         
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <FactorialDesignListHead
+                <WordreplaceListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -171,11 +201,11 @@ const FactorialDesign = (props) => {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {DATALIST.length > 0 && DATALIST
+                  {DATALIST.length >0 && DATALIST
                     .map((row) => {
-                      const { id, name, date, benchmarks} = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
-                      const countBenchmarks = (benchmarks.list && Object.values(benchmarks.list).length>0) ? Object.values(benchmarks.list).reduce((sum,row)=> (row) ? sum + 1 : sum) : 0
+                      const { id, target, replace} = row;
+                      const isItemSelected = selected.indexOf(target) !== -1;
+
                       return (
                         <TableRow
                           hover
@@ -194,15 +224,14 @@ const FactorialDesign = (props) => {
                           <TableCell component="th" scope="row">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap>
-                                {id}
+                                  {id}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{name}</TableCell>
-                          <TableCell align="left">{moment(date).format('YYYY-MM-DD H:mm:ss')}</TableCell>
-                          <TableCell align="left">{countBenchmarks}</TableCell>
+                          <TableCell align="left">{target}</TableCell>
+                          <TableCell align="left">{replace}</TableCell>
                           <TableCell align="right">
-                            <FactorialDesignMoreMenu props={props} getData={getData} countBenchmarks={countBenchmarks} row={row} status={(statuses[id]) ? statuses[id] : null}/>
+                            <WordreplaceMoreMenu props={props} row={row} getData={getData}/>
                           </TableCell>
                         </TableRow>
                       );
@@ -240,4 +269,5 @@ const FactorialDesign = (props) => {
     </Page>
   );
 }
-export default withSnackbar(FactorialDesign)
+
+export default withSnackbar(Wordreplaces)

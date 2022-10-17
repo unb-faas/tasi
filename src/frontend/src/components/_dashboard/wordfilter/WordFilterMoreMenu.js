@@ -15,8 +15,8 @@ import { withSnackbar } from '../../../hooks/withSnackbar';
 
 // ----------------------------------------------------------------------
 
-const UseCaseMoreMenu = (props) => {
-  const { row, status, getData, handleProvision, handleUnprovision} = props
+const WordFilterMoreMenu = (props) => {
+  const { row, getData} = props
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false)
   const confirm = useConfirm()
@@ -24,7 +24,7 @@ const UseCaseMoreMenu = (props) => {
   const remove = async (event) =>{
     confirm({ description: 'Confirm removal of this item?' })
       .then(() => {
-        api.remove(`usecase/${row.id}`).then(res=>{
+        api.remove(`wordfilter/${row.id}`).then(res=>{
           if (res){
             props.props.showMessageWarning("The Use Case was removed!")
             getData()
@@ -53,24 +53,6 @@ const UseCaseMoreMenu = (props) => {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
 
-        {(parseInt(row.provisionable,10)===1 && (!status || (status && status.status!==2))) && (
-          <MenuItem sx={{ color: 'text.primary' }} onClick={(event) => handleProvision(row.id)}>
-            <ListItemIcon>
-              <Icon icon={cloudComputer} width={24} height={24} />
-            </ListItemIcon>
-            <ListItemText primary="Provision" primaryTypographyProps={{ variant: 'body2' }} />
-          </MenuItem>
-        )}
-
-        {(parseInt(row.provisionable,10)===1 && (status && (status.status===1 || status.status===2 || status.status===5 || status.status===6))) && (
-          <MenuItem sx={{ color: 'text.primary' }} onClick={(event) => handleUnprovision(row.id)} >
-            <ListItemIcon>
-              <Icon icon={documentHeaderRemove24Regular} width={24} height={24} />
-            </ListItemIcon>
-            <ListItemText primary="Unprovision" primaryTypographyProps={{ variant: 'body2' }} />
-          </MenuItem>
-        )}
-
         <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(event)}}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
@@ -89,5 +71,5 @@ const UseCaseMoreMenu = (props) => {
   );
 }
 
-export default withSnackbar(UseCaseMoreMenu)
+export default withSnackbar(WordFilterMoreMenu)
 

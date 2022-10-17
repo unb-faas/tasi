@@ -1,15 +1,22 @@
 import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import { sentenceCase } from 'change-case';
-import { useState, useEffect } from 'react';
+import linkIcon from '@iconify/icons-bi/link';
+import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
+import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
+import outlineCancel from '@iconify/icons-ic/outline-cancel';
+import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
 import { Link as RouterLink } from 'react-router-dom';
+import Modal from '@mui/material/Modal';
+
 // material
 import {
   Card,
   Table,
   Stack,
-  Avatar,
+  Box,
+  Chip,
+  Grid,
   Button,
   Checkbox,
   TableRow,
@@ -18,26 +25,24 @@ import {
   Container,
   Typography,
   TableContainer,
-  TablePagination
+  TablePagination,
+  CircularProgress,
+  Link as Links,
+  Tooltip
 } from '@material-ui/core';
 // components
 import Page from '../../components/Page';
-import Label from '../../components/Label';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
-import { ProviderListHead, ProviderListToolbar, ProviderMoreMenu } from '../../components/_dashboard/provider';
-import { withSnackbar } from '../../hooks/withSnackbar';
-
-
+import { WordFilterListHead, WordFilterListToolbar, WordFilterMoreMenu } from '../../components/_dashboard/wordfilter';
 import {api} from '../../services';
+import { withSnackbar } from '../../hooks/withSnackbar';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
-  { id: 'name', label: 'Name', alignRight: false },
-  { id: 'acronym', label: 'Acronym', alignRight: false },
-  { id: 'active', label: 'Active', alignRight: false },
+  { id: 'word', label: 'Word', alignRight: false },
   { id: '' }
 ];
 
@@ -53,53 +58,58 @@ function descendingComparator(a, b, orderBy) {
   return 0;
 }
 
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function applySortFilter(array, comparator, query) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  if (query) {
-    return filter(array, (_data) => _data.name.toLowerCase().indexOf(query.toLowerCase()) !== -1);
-  }
-  return stabilizedThis.map((el) => el[0]);
-}
-
-const Providers = (props) => {
+const WordFilters = (props) => {
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState(localStorage.getItem('provider-order') ? localStorage.getItem('provider-order') : 'asc');
+  const [order, setOrder] = useState(localStorage.getItem('wordfilter-order') ? localStorage.getItem('wordfilter-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('provider-order-by') ? localStorage.getItem('provider-order-by') : 'name');
-  const [filterName, setFilterName] = useState(localStorage.getItem('provider-search'));
-  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('provider-rows-per-page') ? localStorage.getItem('provider-rows-per-page') : 5);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordfilter-order-by') ? localStorage.getItem('wordfilter-order-by') : 'name');
+  const [filterName, setFilterName] = useState(localStorage.getItem('wordfilter-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('wordfilter-rows-per-page') ? localStorage.getItem('wordfilter-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
+  const [statuses, setStatuses] = useState({});
   const [total, setTotal] = useState(0);
-
 
   
 
+
+  
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    localStorage.setItem('provider-order', isAsc ? 'desc' : 'asc');
-    localStorage.setItem('provider-order-by', property);
+    localStorage.setItem('wordfilter-order', isAsc ? 'desc' : 'asc');
+    localStorage.setItem('wordfilter-order-by', property);
     setControl(!control)
   };
 
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = DATALIST.map((n) => n.id);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
   const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
-    const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,"filterName":filterName}
-    api.list('provider','backend',params).then(res=>{
-      setDATALIST(res.data.data)
-      setTotal(res.data.total)
+    const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
+    api.list('wordfilter','backend',params).then(res=>{
+      const wordfilterList = res.data.data
+      if (wordfilterList){
+        wordfilterList.forEach(wordfilter=>{
+          api.list(`status/${wordfilter.id}/${wordfilter.acronym}`,'orchestrator').then(res=>{
+            if (res && res.data){
+              const status = res.data
+              const new_statuses = statuses
+              new_statuses[wordfilter.id] = status
+              setStatuses({...statuses,new_statuses})
+            }
+          })
+        })
+        setDATALIST(wordfilterList)
+        setTotal(res.data.total)
+      }
     }).catch(e=>{
       props.showMessageError(`Request failed ${e}`)
     })
@@ -107,16 +117,9 @@ const Providers = (props) => {
 
   useEffect(() => {
     getData(page,rowsPerPage,orderBy,order,filterName)
-  },[control]);
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = DATALIST.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
+    const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
+    return()=>clearInterval(interval)
+  },[control]); 
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
@@ -137,22 +140,20 @@ const Providers = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    localStorage.setItem('provider-page', event.target.value);
+    localStorage.setItem('wordfilter-page', event.target.value);
     setPage(newPage);
-    getData(newPage,rowsPerPage)
     setControl(!control)
   };
 
   const handleChangeRowsPerPage = (event) => {
-    localStorage.setItem('provider-rows-per-page', parseInt(event.target.value,10));
-    getData(0,parseInt(event.target.value, 10))
+    localStorage.setItem('wordfilter-rows-per-page', parseInt(event.target.value,10));
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setControl(!control)
   };
 
   const handleFilterByName = (event) => {
-    localStorage.setItem('provider-search', event.target.value);
+    localStorage.setItem('wordfilter-search', event.target.value);
     setFilterName(event.target.value);
     setPage(0);
     setControl(!control)
@@ -160,39 +161,52 @@ const Providers = (props) => {
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - DATALIST.length) : 0;
 
-  const filteredProviders = applySortFilter(DATALIST, getComparator(order, orderBy), filterName);
 
-  const isProvidersNotFound = filteredProviders.length === 0;
-
-
-
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
+    height:'90%',
+    bgcolor: 'black',
+    color: 'white',
+    border: '2px solid #000',
+    boxShadow: 24,
+    overflow: 'scroll',
+    p: 4,
+  };
   return (
-    <Page title="Providers | Tasi Framework">
+    <Page title="Word Filters | Tasi Framework">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Providers
+            Word Filters
           </Typography>
+
           <Button
             variant="contained"
             component={RouterLink}
             to="create"
             startIcon={<Icon icon={plusFill} />}
           >
-            New Provider
+            New Word
           </Button>
         </Stack>
 
         <Card>
-          <ProviderListToolbar
+          <WordFilterListToolbar
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
+            getData={getData}
+            selected={selected}
+            setSelected={setSelected}
           />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
-                <ProviderListHead
+                <WordFilterListHead
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
@@ -202,11 +216,11 @@ const Providers = (props) => {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {DATALIST.length >0 && DATALIST
+                  {DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, name, active, acronym} = row;
-                      const isItemSelected = selected.indexOf(name) !== -1;
-
+                      const { id, word} = row;
+                      const isItemSelected = selected.indexOf(id) !== -1;
+                      
                       return (
                         <TableRow
                           hover
@@ -216,38 +230,36 @@ const Providers = (props) => {
                           selected={isItemSelected}
                           aria-checked={isItemSelected}
                         >
-                          {/* <TableCell padding="checkbox">
+                          <TableCell padding="checkbox">
                             <Checkbox
                               checked={isItemSelected}
-                              onChange={(event) => handleClick(event, name)}
+                              onChange={(event) => handleClick(event, id)}
                             />
-                          </TableCell> */}
-                          <TableCell component="th" scope="row">
+                          </TableCell>
+                          <TableCell component="th" scope="row" padding="none">
                             <Stack direction="row" alignItems="center" spacing={2}>
                               <Typography variant="subtitle2" noWrap>
-                                  {id}
+                                {id}
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{name}</TableCell>
-                          <TableCell align="left">{acronym}</TableCell>
-                          <TableCell align="left">{active ? 'Yes' : 'No'}</TableCell>
+                          <TableCell align="left">{word}</TableCell>
                           <TableCell align="right">
-                            <ProviderMoreMenu props={props} row={row} getData={getData}/>
+                            <WordFilterMoreMenu props={props} row={row} getData={getData} />
                           </TableCell>
                         </TableRow>
                       );
                     })}
                   {emptyRows > 0 && (
                     <TableRow style={{ height: 53 * emptyRows }}>
-                      <TableCell colSpan={6} />
+                      <TableCell colSpan={9} />
                     </TableRow>
                   )}
                 </TableBody>
                 {!DATALIST.length > 0 && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <SearchNotFound searchQuery={filterName} />
                       </TableCell>
                     </TableRow>
@@ -268,8 +280,9 @@ const Providers = (props) => {
           />
         </Card>
       </Container>
+
     </Page>
   );
 }
 
-export default withSnackbar(Providers)
+export default withSnackbar(WordFilters)

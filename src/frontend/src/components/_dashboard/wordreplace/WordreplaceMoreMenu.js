@@ -4,18 +4,17 @@ import editFill from '@iconify/icons-eva/edit-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
-import graphIcon from '@iconify/icons-flat-ui/graph';
-
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useConfirm } from 'material-ui-confirm';
 import {api} from '../../../services';
 import { withSnackbar } from '../../../hooks/withSnackbar';
 
+
 // ----------------------------------------------------------------------
 
-const FactorialDesignMoreMenu = (props) => {
-  const { row, status, getData, countBenchmarks} = props
+const WordreplaceMoreMenu = (props) => {
+  const {row, getData} = props
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const confirm = useConfirm()
@@ -23,18 +22,17 @@ const FactorialDesignMoreMenu = (props) => {
   const remove = async (event) =>{
     confirm({ description: 'Confirm removal of this item?' })
       .then(() => {
-        api.remove(`factorialDesign/${row.id}`).then(res=>{
+        api.remove(`wordreplace/${row.id}`).then(res=>{
           if (res){
             getData()
-            props.props.showMessageWarning("The Factorial Design was removed!")
+            props.props.showMessageWarning("The wordreplace was removed!")
           } else {
-            props.showMessageError(`Failed to remove this Factorial Design. There are dependencies.`)
+            props.showMessageError(`Failed to remove this wordreplace. There are dependencies.`)
           }
         })
       })
       .catch(() => { /* ... */ });
   }
-
 
   return (
     <>
@@ -52,23 +50,14 @@ const FactorialDesignMoreMenu = (props) => {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        {(row.benchmarks.list && Object.keys(row.benchmarks.list).length && (
-          <MenuItem component={RouterLink} to={`${row.id}/analysis`} sx={{ color: 'text.primary' }} >
-            <ListItemIcon>
-              <Icon icon={graphIcon} width={24} height={24} />
-            </ListItemIcon>
-            <ListItemText primary="Analysis" primaryTypographyProps={{ variant: 'body2' }} />
-          </MenuItem>
-        ))}
-
-        <MenuItem sx={{ color: 'text.error' }} onClick={(event)=>{remove(event)}}>
+        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(event)}}>
           <ListItemIcon>
             <Icon icon={trash2Outline} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem component={RouterLink} to={`${row.id}`} sx={{ color: 'text.primary' }}>
+        <MenuItem component={RouterLink} to={`${row.id}`}  sx={{ color: 'text.primary' }}>
           <ListItemIcon>
             <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
@@ -79,4 +68,4 @@ const FactorialDesignMoreMenu = (props) => {
   );
 }
 
-export default withSnackbar(FactorialDesignMoreMenu)
+export default withSnackbar(WordreplaceMoreMenu)
