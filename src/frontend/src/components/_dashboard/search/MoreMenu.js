@@ -15,7 +15,7 @@ import { withSnackbar } from '../../../hooks/withSnackbar';
 
 // ----------------------------------------------------------------------
 
-const WordFilterMoreMenu = (props) => {
+const SearchMoreMenu = (props) => {
   const { row, getData} = props
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false)
@@ -24,9 +24,9 @@ const WordFilterMoreMenu = (props) => {
   const remove = async (event) =>{
     confirm({ description: 'Confirm removal of this item?' })
       .then(() => {
-        api.remove(`wordfilter/${row.id}`).then(res=>{
+        api.remove(`search/${row.id}`).then(res=>{
           if (res){
-            props.props.showMessageWarning("The Word was removed!")
+            props.props.showMessageWarning("The Search was removed!")
             getData()
           } else {
             props.props.showMessageError(`Failed to remove this use case. There are dependencies.`)
@@ -71,5 +71,5 @@ const WordFilterMoreMenu = (props) => {
   );
 }
 
-export default withSnackbar(WordFilterMoreMenu)
+export default withSnackbar(SearchMoreMenu)
 

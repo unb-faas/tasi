@@ -26,7 +26,7 @@ const sidebarConfig = [
   },
   {
     title: 'Search Databases',
-    path: '/dashboard/searchdatabases',
+    path: '/dashboard/searchdatabase',
     icon: getIcon(databaseFilled)
   },
   {

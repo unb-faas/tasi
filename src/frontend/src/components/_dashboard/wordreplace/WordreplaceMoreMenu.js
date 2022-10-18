@@ -25,7 +25,7 @@ const WordreplaceMoreMenu = (props) => {
         api.remove(`wordreplace/${row.id}`).then(res=>{
           if (res){
             getData()
-            props.props.showMessageWarning("The wordreplace was removed!")
+            props.props.showMessageWarning("The Word was removed!")
           } else {
             props.showMessageError(`Failed to remove this wordreplace. There are dependencies.`)
           }

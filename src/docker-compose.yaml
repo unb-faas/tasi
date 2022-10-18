@@ -48,8 +48,8 @@ services:
       - "${BACKEND_PORT}:4001"
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
-      - REACT_APP_PORT=4001
-      - REACT_APP_BACKEND_URL=${BACKEND_URL}
+      - PORT=4001
+      - API_URL=${BACKEND_URL}
       - DB_USER=${POSTGRES_USER}
       - DB_PASS=${POSTGRES_PASSWORD}
       - DB_NAME=${POSTGRES_DB}
