@@ -6,6 +6,7 @@ import editOutlined from '@iconify/icons-ant-design/edit-outlined';
 import fileSearchOutlined from '@iconify/icons-ant-design/file-search-outlined';
 // ----------------------------------------------------------------------
 
+
 const getIcon = (name) => <Icon icon={name} width={22} height={22} />;
 
 const sidebarConfig = [

@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
-import cloudFilled from '@iconify/icons-ant-design/cloud-filled';
+import databaseFilled from '@iconify/icons-ant-design/database-filled';
+
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
@@ -45,7 +46,7 @@ export default function AppNewUsers() {
 
   const getData = () =>{
     const params = {page:0,size:1}
-    api.list('provider','backend',params).then(res=>{
+    api.list('searchdatabase','backend',params).then(res=>{
       setTotal(res.data.total)
     })
   }
@@ -57,11 +58,11 @@ export default function AppNewUsers() {
   return (
     <RootStyle>
       <IconWrapperStyle>
-        <Icon icon={cloudFilled} width={24} height={24} />
+        <Icon icon={databaseFilled} width={24} height={24} />
       </IconWrapperStyle>
       <Typography variant="h3">{fShortenNumber(total)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Providers
+        Search Databases
       </Typography>
     </RootStyle>
   );

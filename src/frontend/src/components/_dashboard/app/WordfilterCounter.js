@@ -1,5 +1,6 @@
 import { Icon } from '@iconify/react';
-import toolsIcon from '@iconify/icons-bi/tools';
+import filterFilled from '@iconify/icons-ant-design/filter-filled';
+
 // material
 import { alpha, styled } from '@material-ui/core/styles';
 import { Card, Typography } from '@material-ui/core';
@@ -37,13 +38,13 @@ const IconWrapperStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function AppItemOrders() {
+export default function WordfilterCounter() {
   const [control, setControl] = useState(0);
   const [total, setTotal] = useState(0);
 
   const getData = () =>{
     const params = {page:0,size:1}
-    api.list('usecase','backend',params).then(res=>{
+    api.list('wordfilter','backend',params).then(res=>{
       setTotal(res.data.total)
     })
   }
@@ -54,11 +55,11 @@ export default function AppItemOrders() {
   return (
     <RootStyle>
       <IconWrapperStyle>
-        <Icon icon={toolsIcon} width={24} height={24} />
+        <Icon icon={filterFilled} width={24} height={24} />
       </IconWrapperStyle>
       <Typography variant="h3">{fShortenNumber(total)}</Typography>
       <Typography variant="subtitle2" sx={{ opacity: 0.72 }}>
-        Use Cases
+        Words to filter
       </Typography>
     </RootStyle>
   );
