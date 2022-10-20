@@ -26,8 +26,26 @@ exports.up = function(knex) {
             table.timestamp('until')
             table.timestamp('created_at')
             table.json('search_databases')
-            table.json('results')
         })
+
+        .createTable('tb_search_execution', table => {
+            table.increments('id').primary()
+            table.integer('id_search').references('id').inTable('tb_search').notNull()
+            table.timestamp('date')
+            table.integer('total_slices')
+            table.json('status')
+        })
+
+        .createTable('tb_search_result', table => {
+            table.increments('id').primary()
+            table.integer('id_search_execution').references('id').inTable('tb_search_execution').notNull()
+            table.timestamp('date')
+            table.integer('slice')
+            table.json('status')
+            table.json('content')
+        })
+
+
 };
 
 exports.down = function(knex) {
@@ -36,4 +54,6 @@ exports.down = function(knex) {
         .dropTable('tb_word_filter')
         .dropTable('tb_search_database')
         .dropTable('tb_search')
+        .dropTable('tb_search_execution')
+        .dropTable('tb_search_results')
 };

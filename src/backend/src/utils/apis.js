@@ -28,7 +28,8 @@ module.exports = {
           console.log(err)
         })
       case "findpapers":
-        return findpapers(axiosOptions).catch(err=>{
+        return findpapers(axiosOptions)
+        .catch(err=>{
           console.log(err)
         })
       default:
@@ -51,9 +52,10 @@ module.exports = {
           console.log(err)
         })
       case "findpapers":
-        return findpapers(axiosOptions).catch(err=>{
-          console.log(err)
-        })
+        return findpapers(axiosOptions)
+        // .catch(err=>{
+        //   console.log(err)
+        // })
       default:
         break;
     }

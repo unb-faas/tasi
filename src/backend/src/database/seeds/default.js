@@ -3,6 +3,8 @@ exports.seed = async function (knex, Promise) {
   await knex("tb_word_replace").del()
   await knex("tb_word_filter").del()
   await knex("tb_search_database").del()
+  await knex("tb_search_result").del()
+  await knex("tb_search_execution").del()
   await knex("tb_search").del()
   
   await knex("tb_word_replace")
@@ -53,14 +55,16 @@ exports.seed = async function (knex, Promise) {
           id: 1,
           name: "scopus",
           credentials: {
-            token: ""
+            name: "token-scopus",
+            value: "f6e0c5433a4761a43aae1a974e38209f"
           }
         },
         {     
           id: 2,
           name: "ieee",
           credentials: {
-            token: ""
+            name: "token-ieee",
+            value: "w5dt9tdxaprbgywajqbbue6y"
           }
         }
       ]);
@@ -76,11 +80,10 @@ exports.seed = async function (knex, Promise) {
           id: 1,
           description: "FaaS",
           string: "[serverless] OR [function-as-a-service] OR [function as a service] OR [backend-as-a-service] OR [backend as a service] OR [aws lambda] OR [google gloud platform] OR [azure functions]",
-          since: "2014-01-01",
-          until: "2022-12-31",
+          since: "2019-06-01",
+          until: "2019-12-31",
           created_at: "2022-10-14",
           search_databases: {ids:[1,2]},
-          results: {}
         },
       ]);
     });

@@ -355,6 +355,17 @@ module.exports = (app) => {
          #swagger.responses[500] = { description: "Error on server"}
          */
      )
+    router
+     .route(`/search/:id/play`)
+       .get(
+         app.controllers.SearchController.play
+         /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+           #swagger.tags = ['Search']
+           #swagger.responses[200] = { description: "Successful"}
+           #swagger.responses[404] = { description: "Not Found" }
+           #swagger.responses[500] = { description: "Error on server"}
+         */
+       )
 
   app.use(app.basePath, router);
 };

@@ -1,15 +1,13 @@
 const conn = require('../database/connection')
 const paginationUtils = require('../utils/pagination')
 
-const table='tb_search as a'
+const table='tb_search_execution as a'
 const defaultFields = [
     'a.id',
-    'a.description',
-    'a.string',
-    'a.since',
-    'a.until',
-    'a.created_at',
-    'a.search_databases',
+    'a.id_search',
+    'a.date',
+    'a.total_slices',
+    'a.status',
  ]
 
 const getById = async (id) => {
@@ -38,8 +36,8 @@ const getPage = async (queryParams) => {
     let query = conn(table)
     
     /* Filtering */
-    if(queryParams.filterName) {
-        query = query.andWhereRaw("LOWER(a.description) LIKE ?", [`%${queryParams.filterName.toLowerCase()}%`])                        
+    if(queryParams.filterSearch) {
+        query = query.andWhereRaw(" a.id_search = ", [queryParams.filterSearch])                        
     }
    
     /* Counting */

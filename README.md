@@ -1,5 +1,4 @@
-# Orama
-TASI framework
+# TASI framework
 
 ## Description
 
