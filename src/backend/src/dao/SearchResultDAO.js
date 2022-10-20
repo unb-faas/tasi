@@ -38,7 +38,7 @@ const getPage = async (queryParams) => {
     
     /* Filtering */
     if(queryParams.filterSearchExecution) {
-        query = query.andWhereRaw(" a.id_search_execution = ", [queryParams.filterSearchExecution])                        
+        query = query.andWhereRaw(" a.id_search_execution = ?", [queryParams.filterSearchExecution])                        
     }
    
     /* Counting */

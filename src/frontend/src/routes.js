@@ -15,6 +15,8 @@ import SearchDatabaseForm from './pages/SearchDatabase/Form';
 
 import Search from './pages/Search/Index';
 import SearchForm from './pages/Search/Form';
+import SearchExecutions from './pages/Search/IndexExecutions';
+import SearchResults from './pages/Search/IndexResults';
 
 import NotFound from './pages/Common/Page404';
 
@@ -42,7 +44,10 @@ export default function Router() {
 
         { path: 'search/create', element: <SearchForm /> },
         { path: 'search/:id', element: <SearchForm /> },
+        { path: 'search/:id/executions', element: <SearchExecutions /> },
+        { path: 'search/:id/executions/results/:idExec', element: <SearchResults /> },
         { path: 'search', element: <Search /> },
+
       ]
     },
     {

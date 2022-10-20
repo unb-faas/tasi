@@ -78,8 +78,8 @@
     "react-datepicker": "^4.8.0",
     "@mui/x-date-pickers": "^5.0.4",
     "dayjs": "^1.11.5",
-    "@mui/material": "^5.10.10"
-    
+    "@mui/material": "^5.10.10",
+    "@mui/icons-material":"^5.10.9"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",

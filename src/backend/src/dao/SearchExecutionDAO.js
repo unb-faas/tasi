@@ -37,15 +37,16 @@ const getPage = async (queryParams) => {
     
     /* Filtering */
     if(queryParams.filterSearch) {
-        query = query.andWhereRaw(" a.id_search = ", [queryParams.filterSearch])                        
+        query = query.andWhereRaw(" a.id_search = ?", [queryParams.filterSearch])                        
     }
-   
+    
     /* Counting */
     let total = await query.clone().count();
+    
     if(!total) {
         total = 0;
     } else {
-        total = parseInt(total[0].count)
+        total = parseInt(total.shift().count)
     }
 
     /* Ordering */
@@ -61,13 +62,12 @@ const getPage = async (queryParams) => {
                 .select(defaultFields)
                 .offset(pagination.page * pagination.size)
                 .limit(pagination.size);
-                 
+
     /* Executing */
     let data = await query.catch(err =>{return {error:err}});
     result.data = data;
     result.count = data.length;    
     result.total = total;
-
     return result;
 }
 

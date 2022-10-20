@@ -5,8 +5,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
 import outlineCancel from '@iconify/icons-ic/outline-cancel';
+import arrowBackOutline from '@iconify/icons-eva/arrow-back-outline';
 import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 
 // material
@@ -34,20 +35,19 @@ import {
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
-import { SearchListHead, SearchListToolbar, SearchMoreMenu } from '../../components/_dashboard/search';
+import { SearchListHead, SearchListToolbar, SearchMoreMenuExecutions } from '../../components/_dashboard/search';
 import {api} from '../../services';
 import { withSnackbar } from '../../hooks/withSnackbar';
 
 // ----------------------------------------------------------------------
 
+const moment = require('moment');  
+
+
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'string', label: 'String', alignRight: false },
-  { id: 'since', label: 'Since', alignRight: false },
-  { id: 'until', label: 'Until', alignRight: false },
-  { id: 'search_databases', label: 'Databases', alignRight: false },
-  { id: 'created_at', label: 'Created at', alignRight: false },
+  { id: 'date', label: 'Date', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: '' }
 ];
 
@@ -64,6 +64,7 @@ function descendingComparator(a, b, orderBy) {
 }
 
 const Searchs = (props) => {
+  const {id} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('search-order') ? localStorage.getItem('search-order') : 'asc');
@@ -72,7 +73,6 @@ const Searchs = (props) => {
   const [filterName, setFilterName] = useState(localStorage.getItem('search-search'));
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-rows-per-page') ? localStorage.getItem('search-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
-  const [statuses, setStatuses] = useState({});
   const [total, setTotal] = useState(0);
 
   
@@ -97,19 +97,9 @@ const Searchs = (props) => {
 
   const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
-    api.list('search','backend',params).then(res=>{
+    api.list(`search/${id}/executions`,'backend',params).then(res=>{
       const searchList = res.data.data
       if (searchList){
-        searchList.forEach(search=>{
-          api.list(`status/${search.id}/${search.acronym}`,'orchestrator').then(res=>{
-            if (res && res.data){
-              const status = res.data
-              const new_statuses = statuses
-              new_statuses[search.id] = status
-              setStatuses({...statuses,new_statuses})
-            }
-          })
-        })
         setDATALIST(searchList)
         setTotal(res.data.total)
       }
@@ -162,14 +152,6 @@ const Searchs = (props) => {
     setControl(!control)
   };
 
-  const play = async (id) =>{
-    api.get(`search/${id}/play`,"backend").then(res => {
-      props.showMessageSuccess("The search execution was requested!")
-    })
-  }
-    
-  
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - DATALIST.length) : 0;
 
 
@@ -188,32 +170,15 @@ const Searchs = (props) => {
     p: 4,
   };
   return (
-    <Page title="Searches | Tasi Framework">
+    <Page title="Search Executions | Tasi Framework">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Searches
+            Search Executions
           </Typography>
-
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="create"
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Search
-          </Button>
         </Stack>
 
         <Card>
-          <SearchListToolbar
-            numSelected={selected.length}
-            filterName={filterName}
-            onFilterName={handleFilterByName}
-            getData={getData}
-            selected={selected}
-            setSelected={setSelected}
-          />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
@@ -229,7 +194,7 @@ const Searchs = (props) => {
                 <TableBody>
                   {DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, description, string, since, until, created_at, search_databases } = row;
+                      const { id, date, status} = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
                       
                       return (
@@ -254,22 +219,12 @@ const Searchs = (props) => {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{description}</TableCell>
+                          <TableCell align="left">{moment(date).format('YYYY/MM/DD')}</TableCell>
                           <TableCell align="left">
-                            {string}
+                            {status.text}
                           </TableCell>
-                          <TableCell align="left">{new Date(since).toLocaleDateString()}</TableCell>
-                          <TableCell align="left">{new Date(until).toLocaleDateString()}</TableCell>
-                          <TableCell align="left">
-                            {
-                                search_databases.objects.length > 0 && search_databases.objects.map((database) => 
-                                    <Typography variant="subtitle2">{database.name}</Typography>
-                                )
-                            }
-                          </TableCell>
-                          <TableCell align="left">{new Date(created_at).toLocaleDateString()}</TableCell>
                           <TableCell align="right">
-                            <SearchMoreMenu props={props} row={row} getData={getData} play={play}/>
+                            <SearchMoreMenuExecutions props={props} row={row} getData={getData} />
                           </TableCell>
                         </TableRow>
                       );
@@ -303,6 +258,17 @@ const Searchs = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+        <Box mt={3}>
+          <Button
+                variant="contained"
+                component={RouterLink}
+                to="../.."
+                color="info"
+                startIcon={<Icon icon={arrowBackOutline} />}
+            >
+                Back
+            </Button>
+        </Box>
       </Container>
 
     </Page>

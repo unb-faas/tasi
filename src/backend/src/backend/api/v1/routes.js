@@ -366,6 +366,28 @@ module.exports = (app) => {
            #swagger.responses[500] = { description: "Error on server"}
          */
        )
+    router
+       .route(`/search/:id/executions`)
+         .get(
+           app.controllers.SearchController.listExecutions
+           /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+             #swagger.tags = ['Search']
+             #swagger.responses[200] = { description: "Successful"}
+             #swagger.responses[404] = { description: "Not Found" }
+             #swagger.responses[500] = { description: "Error on server"}
+           */
+         )
+      router
+        .route(`/search/:id/results`)
+          .get(
+            app.controllers.SearchController.listResults
+            /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+              #swagger.tags = ['Search']
+              #swagger.responses[200] = { description: "Successful"}
+              #swagger.responses[404] = { description: "Not Found" }
+              #swagger.responses[500] = { description: "Error on server"}
+            */
+          )
 
   app.use(app.basePath, router);
 };

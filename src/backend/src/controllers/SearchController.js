@@ -48,6 +48,35 @@ module.exports = (app) => {
     }
   };
 
+  const listExecutions = async (req, res) => {
+    try {
+        const { id } = req.params
+        req.query["filterSearch"] = id
+        let result = await daoExecution.getPage(req.query);
+        return (res) ? res.json(result) : result;
+    } catch (error) {
+        return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
+    }
+  };
+
+  const listResults = async (req, res) => {
+    try {
+        const { id } = req.params
+        req.query["filterSearchExecution"] = id
+        let result = await daoResult.getPage(req.query);
+        let papers = []
+        for (let i in result.data){
+          if (result.data[i] && result.data[i].content && result.data[i].content.papers){
+            papers = papers.concat(result.data[i].content.papers)
+          }
+        }
+        result = {data:papers, total:papers.length}
+        return (res) ? res.json(result) : result;
+    } catch (error) {
+        return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
+    }
+  };
+
   const update = async (req, res) => {
     try {
         const { id } = req.params
@@ -224,6 +253,8 @@ module.exports = (app) => {
   return {
     get,
     list,
+    listExecutions,
+    listResults,
     remove,
     update,
     create,
