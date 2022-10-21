@@ -17,6 +17,7 @@ import Search from './pages/Search/Index';
 import SearchForm from './pages/Search/Form';
 import SearchExecutions from './pages/Search/IndexExecutions';
 import SearchResults from './pages/Search/IndexResults';
+import SearchWordCloud from './pages/Search/IndexWordCloud';
 
 import NotFound from './pages/Common/Page404';
 
@@ -46,6 +47,7 @@ export default function Router() {
         { path: 'search/:id', element: <SearchForm /> },
         { path: 'search/:id/executions', element: <SearchExecutions /> },
         { path: 'search/:id/executions/results/:idExec', element: <SearchResults /> },
+        { path: 'search/:id/executions/wordcloud/:idExec', element: <SearchWordCloud /> },
         { path: 'search', element: <Search /> },
 
       ]

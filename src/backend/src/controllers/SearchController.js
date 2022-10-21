@@ -1,6 +1,8 @@
 const dao = require('../dao/SearchDAO')
 const daoExecution = require('../dao/SearchExecutionDAO')
 const daoResult = require('../dao/SearchResultDAO')
+const daoWordReplace = require('../dao/WordReplaceDAO')
+const daoWordFilter = require('../dao/WordFilterDAO')
 const apis = require('../utils/apis')
 const status = require('../utils/status')
 const moment = require("moment")
@@ -17,7 +19,6 @@ module.exports = (app) => {
         }
         res.data[i].search_databases.objects = arrDatabases
     }
-    //console.log(res)
     return res
   }  
 
@@ -70,7 +71,58 @@ module.exports = (app) => {
             papers = papers.concat(result.data[i].content.papers)
           }
         }
+    
         result = {data:papers, total:papers.length}
+
+        if (req.query.wordcloud){
+            const replaces = await daoWordReplace.getPage({size:999999})
+            let words = ""
+            for (let i in papers){
+                const paper = papers[i]
+                let abstract = paper.abstract ? paper.abstract.toLowerCase().replace(/\./g, '').replace(/,/g, '') : ""
+                for (let i in replaces.data){
+                    const change = replaces.data[i]
+                    const re = new RegExp(change.target.toLowerCase(),"g")
+                    abstract = abstract.replace(re,change.replace.toLowerCase())
+                }
+                words += abstract
+            }
+            
+            words = words.split(" ")
+
+            const filters = await daoWordFilter.getPage({size:999999})
+            for (let i in filters.data){
+                const filter = filters.data[i]
+                const temp = words.filter(element => ![filter.word].includes(element))
+                words = temp
+            }
+
+            const frequency = words.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
+            let frequencyList = [...frequency.entries()]
+            frequencyList = frequencyList.sort((a, b)=>{
+                if (a[1] > b[1]) {
+                    return -1;
+                  }
+                  if (a[1] < b[1]) {
+                    return 1;
+                  }
+                  return 0;
+            })
+
+            frequencyList = frequencyList.slice(0,200)
+            const frequencyFormated = []
+            for (let i in frequencyList){
+                const freq = frequencyList[i]
+                    frequencyFormated.push(
+                        {
+                            text: freq[0],
+                            value: freq[1]*10
+                        }
+                    )
+            }
+            result =  {data:frequencyFormated, total:frequencyFormated.length}
+        }
+
         return (res) ? res.json(result) : result;
     } catch (error) {
         return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`

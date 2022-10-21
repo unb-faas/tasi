@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import moreVerticalFill from '@iconify/icons-eva/more-vertical-fill';
 import calendarOutline from '@iconify/icons-eva/calendar-outline';
-
+import cloudOutlined from '@iconify/icons-ant-design/cloud-outlined';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useConfirm } from 'material-ui-confirm';
@@ -56,8 +56,14 @@ const SearchMoreMenuExecutions = (props) => {
           </ListItemIcon>
           <ListItemText primary="Results" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
-        
 
+        <MenuItem component={RouterLink} to={`wordcloud/${row.id}`} sx={{ color: 'text.primary' }}>
+          <ListItemIcon>
+            <Icon icon={cloudOutlined} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Word Cloud" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+        
       </Menu>
     </>
   );
