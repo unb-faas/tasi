@@ -80,7 +80,8 @@
     "dayjs": "^1.11.5",
     "@mui/material": "^5.10.10",
     "@mui/icons-material":"^5.10.9",
-    "react-d3-cloud": "^1.0.5"
+    "react-d3-cloud": "^1.0.5",
+    "save-svg-as-png": "^1.4.17"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
