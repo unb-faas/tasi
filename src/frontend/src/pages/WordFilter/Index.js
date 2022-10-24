@@ -97,16 +97,6 @@ const WordFilters = (props) => {
     api.list('wordfilter','backend',params).then(res=>{
       const wordfilterList = res.data.data
       if (wordfilterList){
-        wordfilterList.forEach(wordfilter=>{
-          api.list(`status/${wordfilter.id}/${wordfilter.acronym}`,'orchestrator').then(res=>{
-            if (res && res.data){
-              const status = res.data
-              const new_statuses = statuses
-              new_statuses[wordfilter.id] = status
-              setStatuses({...statuses,new_statuses})
-            }
-          })
-        })
         setDATALIST(wordfilterList)
         setTotal(res.data.total)
       }

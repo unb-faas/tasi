@@ -5,6 +5,7 @@ const table='tb_search_database as a'
 const defaultFields = [
     'a.id',
     'a.name',
+    'a.parallelize',
     'a.credentials',
  ]
 
@@ -47,6 +48,10 @@ const getPage = async (queryParams) => {
     }
 
     /* Ordering */
+    if(queryParams.orderBy && queryParams.order) {
+        let orderBy =  queryParams.orderBy
+        query = query.orderBy(queryParams.orderBy, queryParams.order);
+    }
     pagination.sort.forEach(function (value) {
         query = query.orderBy(value.column, value.order);
     });     

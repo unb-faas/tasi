@@ -55,18 +55,11 @@ const SearchMoreMenu = (props) => {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
 
-        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(event)}}>
-          <ListItemIcon>
-            <Icon icon={trash2Outline} width={24} height={24} />
+        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{play(row.id)}}>
+          <ListItemIcon >
+            <Icon icon={playCircleFilled} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-
-        <MenuItem component={RouterLink} to={`${row.id}`} sx={{ color: 'text.primary' }}>
-          <ListItemIcon>
-            <Icon icon={editFill} width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Play" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
         <MenuItem component={RouterLink} to={`${row.id}/executions`} sx={{ color: 'text.primary' }}>
@@ -76,11 +69,18 @@ const SearchMoreMenu = (props) => {
           <ListItemText primary="Executions" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
-        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{play(row.id)}}>
-          <ListItemIcon >
-            <Icon icon={playCircleFilled} width={24} height={24} />
+        <MenuItem component={RouterLink} to={`${row.id}`} sx={{ color: 'text.primary' }}>
+          <ListItemIcon>
+            <Icon icon={editFill} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Play" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary="Edit" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+
+        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(event)}}>
+          <ListItemIcon>
+            <Icon icon={trash2Outline} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Delete" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
 
       </Menu>

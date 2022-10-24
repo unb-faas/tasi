@@ -76,7 +76,7 @@ const Wordreplaces = (props) => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('wordreplace-order') ? localStorage.getItem('wordreplace-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordreplace-order-by') ? localStorage.getItem('wordreplace-order-by') : 'name');
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordreplace-order-by') ? localStorage.getItem('wordreplace-order-by') : 'target');
   const [filterName, setFilterName] = useState(localStorage.getItem('wordreplace-search'));
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('wordreplace-rows-per-page') ? localStorage.getItem('wordreplace-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);

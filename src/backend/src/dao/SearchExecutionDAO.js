@@ -6,9 +6,11 @@ const defaultFields = [
     'a.id',
     'a.id_search',
     'a.date',
-    'a.total_slices',
+    'a.total_chunks',
     'a.status',
  ]
+ .concat(conn.raw("(select count(*) from tb_search_result as b where id_search_execution = a.id and b.status->>'text' = 'Finished') as chunks_finished "))
+ .concat(conn.raw("( WITH papers AS ( SELECT json_array_length(content->'papers') as cPapers FROM tb_search_result where id_search_execution=a.id) SELECT sum(cPapers)  FROM papers) as papers_found"))
 
 const getById = async (id) => {
     /* Querying */
@@ -50,6 +52,10 @@ const getPage = async (queryParams) => {
     }
 
     /* Ordering */
+    if(queryParams.orderBy && queryParams.order) {
+        let orderBy =  queryParams.orderBy
+        query = query.orderBy(queryParams.orderBy, queryParams.order);
+    }
     pagination.sort.forEach(function (value) {
         query = query.orderBy(value.column, value.order);
     });     
@@ -83,7 +89,10 @@ const update = (id,params) => {
         .update(params)
 }
 
-const remove = (id) => {
+const remove = async (id) => {
+    await conn('tb_search_result')
+        .where('id_search_execution',"=",id)
+        .del()
     return conn(table)
         .where('id',"=",id)
         .del()

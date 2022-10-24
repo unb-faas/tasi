@@ -1,12 +1,14 @@
-const dao = require('../dao/SearchDatabaseDAO')
-const apis = require('../utils/apis');
+const dao = require('../dao/SearchResultDAO')
+const search = require('../utils/search')
+const moment = require("moment")
+const status = require('../utils/status')
 
 module.exports = (app) => {
 
   const get = async (req, res) => {
     try {
       const { id } = req.params
-      const result = await dao.getById(id)
+      let result = await dao.getById(id)
       let status_code = 200
       if (Object.keys(result).length === 0){
         status_code = 404
@@ -19,28 +21,8 @@ module.exports = (app) => {
 
   const list = async (req, res) => {
     try {
-        const result = await dao.getPage(req.query);
+        let result = await dao.getPage(req.query);
         return (res) ? res.json(result) : result;
-    } catch (error) {
-        return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
-    }
-  };
-
-  const getTokens = async (req, res) => {
-    try {
-        const result = await dao.getPage(req.query);
-        let tokens = [];
-        if (Object.keys(result.data).length){
-            tokens.push(result.data.map(database=>{
-                if (database.credentials && database.credentials.name){
-                    return database.credentials
-                } else {
-                    return false
-                }
-            }))
-        }
-        tokens = tokens.flat().filter(obj=>obj.name)
-        return (res) ? res.json(tokens) : tokens;
     } catch (error) {
         return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
     }
@@ -82,13 +64,38 @@ module.exports = (app) => {
         return res.status(500).json(`Error: ${error}`)
     }  
   };
-  
+
+  const replay = async (req, res) => {
+    try {
+      const { id } = req.params
+      let result = await dao.getById(id)
+      let status_code = 200
+      if (Object.keys(result).length === 0){
+        status_code = 404
+      }
+      if (result.status && parseInt(result.status.id,10) === status.error().id){
+        const tokens = await app.controllers.SearchDatabaseController.getTokens({query:{}})
+        const params = {
+            query: result.query,
+            since:  moment(new Date(result.since)).format("YYYY-MM-DD"),
+            until:  moment(new Date(result.until)).format("YYYY-MM-DD"),
+            databases: result.database,
+            tokens: {"list":tokens}
+        }
+        await search.findPapers(id, result.id_search_execution, params)
+      }
+      return (res) ? res.status(status_code).json(result) : result;        
+    } catch (error) {
+        return res.status(500).json(`Error: ${error}`)
+    }
+  };
+
   return {
     get,
     list,
     remove,
     update,
     create,
-    getTokens
+    replay
   };
 };

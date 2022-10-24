@@ -47,6 +47,10 @@ const moment = require('moment');
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'date', label: 'Date', alignRight: false },
+  { id: 'total_chunks', label: 'Total Chunks', alignRight: false },
+  { id: 'chunks_finished', label: 'Chunks finished', alignRight: false },
+  { id: 'Percent', label: 'Percent', alignRight: false },
+  { id: 'papers_found', label: 'Papers Found', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
   { id: '' }
 ];
@@ -67,11 +71,11 @@ const Searchs = (props) => {
   const {id} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState(localStorage.getItem('search-order') ? localStorage.getItem('search-order') : 'asc');
+  const [order, setOrder] = useState(localStorage.getItem('searchresult-order') ? localStorage.getItem('searchresult-order') : 'desc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-order-by') ? localStorage.getItem('search-order-by') : 'name');
-  const [filterName, setFilterName] = useState(localStorage.getItem('search-search'));
-  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-rows-per-page') ? localStorage.getItem('search-rows-per-page') : 5);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('searchresult-order-by') ? localStorage.getItem('searchresult-order-by') : 'date');
+  const [filterName, setFilterName] = useState(localStorage.getItem('searchresult-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('searchresult-rows-per-page') ? localStorage.getItem('searchresult-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
   const [total, setTotal] = useState(0);
 
@@ -81,8 +85,8 @@ const Searchs = (props) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    localStorage.setItem('search-order', isAsc ? 'desc' : 'asc');
-    localStorage.setItem('search-order-by', property);
+    localStorage.setItem('searchresult-order', isAsc ? 'desc' : 'asc');
+    localStorage.setItem('searchresult-order-by', property);
     setControl(!control)
   };
 
@@ -133,20 +137,20 @@ const Searchs = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    localStorage.setItem('search-page', event.target.value);
+    localStorage.setItem('searchresult-page', event.target.value);
     setPage(newPage);
     setControl(!control)
   };
 
   const handleChangeRowsPerPage = (event) => {
-    localStorage.setItem('search-rows-per-page', parseInt(event.target.value,10));
+    localStorage.setItem('searchresult-rows-per-page', parseInt(event.target.value,10));
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setControl(!control)
   };
 
   const handleFilterByName = (event) => {
-    localStorage.setItem('search-search', event.target.value);
+    localStorage.setItem('searchresult-search', event.target.value);
     setFilterName(event.target.value);
     setPage(0);
     setControl(!control)
@@ -194,7 +198,7 @@ const Searchs = (props) => {
                 <TableBody>
                   {DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, date, status} = row;
+                      const { id, date, status, total_chunks, chunks_finished, papers_found} = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
                       
                       return (
@@ -219,7 +223,19 @@ const Searchs = (props) => {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{moment(date).format('YYYY/MM/DD')}</TableCell>
+                          <TableCell align="left">{moment(date).format('YYYY/MM/DD HH:mm:ss')}</TableCell>
+                          <TableCell align="left">
+                            {total_chunks}
+                          </TableCell>
+                          <TableCell align="left">
+                            {chunks_finished}
+                          </TableCell>
+                          <TableCell align="left">
+                            {Math.floor(chunks_finished/total_chunks*100)}%
+                          </TableCell>
+                          <TableCell align="left">
+                            {papers_found}
+                          </TableCell>
                           <TableCell align="left">
                             {status.text}
                           </TableCell>

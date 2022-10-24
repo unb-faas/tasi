@@ -47,6 +47,7 @@ import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import {api} from '../../services';
 import { withSnackbar } from '../../hooks/withSnackbar';
+import FrequencyChart  from './charts/Frequency';
 
 // ----------------------------------------------------------------------
 
@@ -55,20 +56,20 @@ const Searchs = (props) => {
   const {idExec} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState(localStorage.getItem('search-wordcloud-order') ? localStorage.getItem('search-wordcloud-order') : 'asc');
+  const [order, setOrder] = useState(localStorage.getItem('search-ranking-order') ? localStorage.getItem('search-ranking-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-wordcloud-order-by') ? localStorage.getItem('search-wordcloud-order-by') : 'id');
-  const [filterName, setFilterName] = useState(localStorage.getItem('search-wordcloud-search'));
-  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-wordcloud-rows-per-page') ? localStorage.getItem('search-wordcloud-rows-per-page') : 99999999);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-ranking-order-by') ? localStorage.getItem('search-ranking-order-by') : 'id');
+  const [filterName, setFilterName] = useState(localStorage.getItem('search-ranking-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-ranking-rows-per-page') ? localStorage.getItem('search-ranking-rows-per-page') : 999999);
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
   const [words, setWords] = useState(200);
   const [weight, setWeight] = useState(50);
 
-  const getData = (page,rowsPerPage,orderBy,order,filterName, words, weight) =>{
+  const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
-    api.list(`search/${idExec}/results?wordcloud=true&words=${words}&weight=${weight}`,'backend',params).then(res=>{
-      const searchList = res.data.data
+    api.list(`search/${idExec}/results?ranking=true`,'backend',params).then(res=>{
+      const searchList = res.data
       if (searchList){
         setDATALIST(searchList)
         setTotal(res.data.total)
@@ -98,57 +99,18 @@ const Searchs = (props) => {
     // const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
     // return()=>clearInterval(interval)
   },[control]); 
-
   
   return (
-    <Page title="Search Word Cloud | Tasi Framework" >
+    <Page title="Search Ranking | Tasi Framework" >
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Word Cloud
+            Ranking
           </Typography>
         </Stack>
         <Card>
             {DATALIST &&
-                <fragment>
-                    <Box p={3}>
-                      <Grid container>
-                        <Grid item xs={4}>
-                          <TextField 
-                              label="Words" 
-                              variant="outlined" 
-                              value={words}
-                              onChange={handleChangeWords}
-                          />    
-                        </Grid>
-                        <Grid item xs={6}>
-                          <TextField 
-                              label="Weight" 
-                              variant="outlined" 
-                              value={weight}
-                              onChange={handleChangeWeight}
-                          />    
-                        </Grid>
-                        <Grid item xs={2}>
-                          <Button
-                              onClick={handleSave}
-                              variant="contained"
-                              color="secondary"
-                              startIcon={<Icon icon={saveFilled} />}
-                          >
-                              Save as Image
-                          </Button>
-                        </Grid>
-                      </Grid>
-                        
-                        
-                        
-                    </Box>
-                    <Divider />
-                    <span ref={wordcloudRef}>
-                        <WordCloud spiral="archimedean" data={DATALIST} />
-                    </span>
-                </fragment>
+               <FrequencyChart DATALIST={DATALIST} /> 
             }
         </Card>
         <Box mt={3}>

@@ -1,16 +1,19 @@
-const dao = require('../dao/SearchDatabaseDAO')
-const apis = require('../utils/apis');
-
+const dao = require('../dao/SearchExecutionDAO')
+const apis = require('../utils/apis')
+const moment = require("moment")
 module.exports = (app) => {
 
   const get = async (req, res) => {
     try {
       const { id } = req.params
-      const result = await dao.getById(id)
+      let result = await dao.getById(id)
       let status_code = 200
       if (Object.keys(result).length === 0){
         status_code = 404
       }
+      result = await getDatabases({data:[result]})
+      result = result.data
+      result = result[0]
       return (res) ? res.status(status_code).json(result) : result;        
     } catch (error) {
         return res.status(500).json(`Error: ${error}`)
@@ -19,28 +22,9 @@ module.exports = (app) => {
 
   const list = async (req, res) => {
     try {
-        const result = await dao.getPage(req.query);
+        let result = await dao.getPage(req.query);
+        result = await getDatabases(result)
         return (res) ? res.json(result) : result;
-    } catch (error) {
-        return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
-    }
-  };
-
-  const getTokens = async (req, res) => {
-    try {
-        const result = await dao.getPage(req.query);
-        let tokens = [];
-        if (Object.keys(result.data).length){
-            tokens.push(result.data.map(database=>{
-                if (database.credentials && database.credentials.name){
-                    return database.credentials
-                } else {
-                    return false
-                }
-            }))
-        }
-        tokens = tokens.flat().filter(obj=>obj.name)
-        return (res) ? res.json(tokens) : tokens;
     } catch (error) {
         return (res) ? res.status(500).json(`Error: ${error}`) : `Error: ${error}`
     }
@@ -82,13 +66,12 @@ module.exports = (app) => {
         return res.status(500).json(`Error: ${error}`)
     }  
   };
-  
+
   return {
     get,
     list,
     remove,
     update,
     create,
-    getTokens
   };
 };

@@ -1,12 +1,14 @@
-import { filter } from 'lodash';
+import { filter, result } from 'lodash';
 import { Icon } from '@iconify/react';
 import linkIcon from '@iconify/icons-bi/link';
 import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
+import refreshFill from '@iconify/icons-eva/refresh-fill';
+import arrowBackOutline from '@iconify/icons-eva/arrow-back-outline';
 import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
 import outlineCancel from '@iconify/icons-ic/outline-cancel';
 import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 
 // material
@@ -28,13 +30,15 @@ import {
   TablePagination,
   CircularProgress,
   Link as Links,
-  Tooltip
+  Tooltip,
+  Menu, MenuItem, IconButton, ListItemIcon, ListItemText
 } from '@material-ui/core';
+
 // components
 import Page from '../../components/Page';
 import Scrollbar from '../../components/Scrollbar';
 import SearchNotFound from '../../components/SearchNotFound';
-import { SearchListHead, SearchListToolbar, SearchMoreMenu } from '../../components/_dashboard/search';
+import { SearchListHead, SearchListToolbarSearchResult, SearchMoreMenu } from '../../components/_dashboard/search';
 import {api} from '../../services';
 import { withSnackbar } from '../../hooks/withSnackbar';
 
@@ -42,12 +46,13 @@ import { withSnackbar } from '../../hooks/withSnackbar';
 
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
-  { id: 'string', label: 'String', alignRight: false },
+  { id: 'created_at', label: 'Created at', alignRight: false },
+  { id: 'chunk', label: 'Chunk', alignRight: false },
+  { id: 'database', label: 'Database', alignRight: false },
   { id: 'since', label: 'Since', alignRight: false },
   { id: 'until', label: 'Until', alignRight: false },
-  { id: 'search_databases', label: 'Databases', alignRight: false },
-  { id: 'created_at', label: 'Created at', alignRight: false },
+  { id: 'papers_found', label: 'Papers Found', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: '' }
 ];
 
@@ -64,13 +69,15 @@ function descendingComparator(a, b, orderBy) {
 }
 
 const Searchs = (props) => {
+  const {idExec} = useParams()
+
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState(localStorage.getItem('search-order') ? localStorage.getItem('search-order') : 'asc');
+  const [order, setOrder] = useState(localStorage.getItem('search-chunk-order') ? localStorage.getItem('search-chunk-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-order-by') ? localStorage.getItem('search-order-by') : 'name');
-  const [filterName, setFilterName] = useState(localStorage.getItem('search-search'));
-  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-rows-per-page') ? localStorage.getItem('search-rows-per-page') : 5);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-chunk-order-by') ? localStorage.getItem('search-chunk-order-by') : 'id');
+  const [filterName, setFilterName] = useState(localStorage.getItem('search-chunk-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-chunk-rows-per-page') ? localStorage.getItem('search-chunk-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
   const [statuses, setStatuses] = useState({});
   const [total, setTotal] = useState(0);
@@ -81,8 +88,8 @@ const Searchs = (props) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
-    localStorage.setItem('search-order', isAsc ? 'desc' : 'asc');
-    localStorage.setItem('search-order-by', property);
+    localStorage.setItem('search-chunk-order', isAsc ? 'desc' : 'asc');
+    localStorage.setItem('search-chunk-order-by', property);
     setControl(!control)
   };
 
@@ -97,7 +104,7 @@ const Searchs = (props) => {
 
   const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
-    api.list('search','backend',params).then(res=>{
+    api.list(`searchresult?filterSearchExecution=${idExec}` ,'backend',params).then(res=>{
       const searchList = res.data.data
       if (searchList){
         setDATALIST(searchList)
@@ -133,29 +140,32 @@ const Searchs = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    localStorage.setItem('search-page', event.target.value);
+    localStorage.setItem('search-chunk-page', event.target.value);
     setPage(newPage);
     setControl(!control)
   };
 
   const handleChangeRowsPerPage = (event) => {
-    localStorage.setItem('search-rows-per-page', parseInt(event.target.value,10));
+    localStorage.setItem('search-chunk-rows-per-page', parseInt(event.target.value,10));
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     setControl(!control)
   };
 
   const handleFilterByName = (event) => {
-    localStorage.setItem('search-search', event.target.value);
+    localStorage.setItem('search-chunk-search', event.target.value);
     setFilterName(event.target.value);
     setPage(0);
     setControl(!control)
   };
 
-  const play = async (id) =>{
-    api.get(`search/${id}/play`,"backend").then(res => {
-      props.showMessageSuccess("The search execution was requested!")
-    })
+  const replay = async (ids) =>{
+    ids.forEach( id => {
+        api.get(`searchresult/${id}/replay`,"backend").then(res => {
+            props.showMessageSuccess("The search replay was requested!")
+          })
+    });
+    
   }
     
   
@@ -178,31 +188,23 @@ const Searchs = (props) => {
     p: 4,
   };
   return (
-    <Page title="Searches | Tasi Framework">
+    <Page title="Searches Result Chunks | Tasi Framework">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Searches
+            Searches Result Chunks
           </Typography>
-
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="create"
-            startIcon={<Icon icon={plusFill} />}
-          >
-            New Search
-          </Button>
         </Stack>
 
         <Card>
-          <SearchListToolbar
+          <SearchListToolbarSearchResult
             numSelected={selected.length}
             filterName={filterName}
             onFilterName={handleFilterByName}
             getData={getData}
             selected={selected}
             setSelected={setSelected}
+            replay={replay}
           />
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -219,7 +221,7 @@ const Searchs = (props) => {
                 <TableBody>
                   {DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, description, string, since, until, created_at, search_databases } = row;
+                      const { id,  date, status, chunk, since, until, database, content } = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
                       
                       return (
@@ -244,22 +246,23 @@ const Searchs = (props) => {
                               </Typography>
                             </Stack>
                           </TableCell>
-                          <TableCell align="left">{description}</TableCell>
-                          <TableCell align="left">
-                            {string}
-                          </TableCell>
+                          <TableCell align="left">{new Date(date).toLocaleDateString()}</TableCell>
+                          
+                          <TableCell align="left">{chunk}</TableCell>
+                          <TableCell align="left">{database}</TableCell>
                           <TableCell align="left">{new Date(since).toLocaleDateString()}</TableCell>
                           <TableCell align="left">{new Date(until).toLocaleDateString()}</TableCell>
-                          <TableCell align="left">
-                            {
-                                search_databases.objects.length > 0 && search_databases.objects.map((database) => 
-                                    <Typography variant="subtitle2">{database.name}</Typography>
-                                )
-                            }
-                          </TableCell>
-                          <TableCell align="left">{new Date(created_at).toLocaleDateString()}</TableCell>
+                          <TableCell align="left">{(content && content.papers.length) ? content.papers.length : 0}</TableCell>
+                          <TableCell align="left">{status.text}</TableCell>
                           <TableCell align="right">
-                            <SearchMoreMenu props={props} row={row} getData={getData} play={play}/>
+                            {(status.text === "Error") && 
+                            <MenuItem onClick={(event)=>{replay([id])}} sx={{ color: 'text.primary' }}>
+                                <ListItemIcon>
+                                  <Icon icon={refreshFill} width={24} height={24} />
+                                </ListItemIcon>
+                                <ListItemText primary="" primaryTypographyProps={{ variant: 'body2' }} />
+                            </MenuItem>
+                            }
                           </TableCell>
                         </TableRow>
                       );
@@ -293,6 +296,17 @@ const Searchs = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+        <Box mt={3}>
+          <Button
+                variant="contained"
+                component={RouterLink}
+                to="../.."
+                color="info"
+                startIcon={<Icon icon={arrowBackOutline} />}
+            >
+                Back
+            </Button>
+        </Box>
       </Container>
 
     </Page>

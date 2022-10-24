@@ -389,5 +389,69 @@ module.exports = (app) => {
             */
           )
 
+
+    /*******************************************
+    *            Search Execution
+    ********************************************/
+     router
+       .route(`/searchexecution/:id`)
+          .delete(
+            app.controllers.SearchExecutionController.remove
+            /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+              #swagger.tags = ['Search Execution']
+              #swagger.responses[200] = { description: "Successful"}
+              #swagger.responses[404] = { description: "Not Found" }
+              #swagger.responses[500] = { description: "Error on server"}
+              */
+          )
+    
+  /*******************************************
+  *               Search Result
+  ********************************************/
+   router
+   .route(`/searchresult`)
+     .get(
+       app.controllers.SearchResultController.list
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Result']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['page'] = {
+                description: 'page',
+                in: 'query',
+                required: false
+            }
+         #swagger.parameters['size'] = {
+                description: 'size',
+                in: 'query',
+                required: false
+            }
+         */
+     )
+   router
+   .route(`/searchresult/:id`)
+     .get(
+       app.controllers.SearchResultController.get
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Result']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+       */
+     )
+  
+  router
+    .route(`/searchresult/:id/replay`)
+      .get(
+        app.controllers.SearchResultController.replay
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+          #swagger.tags = ['Search Result']
+          #swagger.responses[200] = { description: "Successful"}
+          #swagger.responses[404] = { description: "Not Found" }
+          #swagger.responses[500] = { description: "Error on server"}
+        */
+      )
+     
+
   app.use(app.basePath, router);
 };

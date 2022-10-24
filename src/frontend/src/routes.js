@@ -18,6 +18,8 @@ import SearchForm from './pages/Search/Form';
 import SearchExecutions from './pages/Search/IndexExecutions';
 import SearchResults from './pages/Search/IndexResults';
 import SearchWordCloud from './pages/Search/IndexWordCloud';
+import SearchRanking from './pages/Search/IndexRanking';
+import SearchChunks from './pages/Search/IndexChunks';
 
 import NotFound from './pages/Common/Page404';
 
@@ -48,6 +50,8 @@ export default function Router() {
         { path: 'search/:id/executions', element: <SearchExecutions /> },
         { path: 'search/:id/executions/results/:idExec', element: <SearchResults /> },
         { path: 'search/:id/executions/wordcloud/:idExec', element: <SearchWordCloud /> },
+        { path: 'search/:id/executions/ranking/:idExec', element: <SearchRanking /> },
+        { path: 'search/:id/executions/chunks/:idExec', element: <SearchChunks /> },
         { path: 'search', element: <Search /> },
 
       ]

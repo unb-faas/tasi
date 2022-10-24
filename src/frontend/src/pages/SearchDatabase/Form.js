@@ -33,6 +33,7 @@ const SearchDatabaseForm = (props)=> {
       id:null,
       name:null,
       credentials:null,
+      parallelize: null
   })
   const getData = () =>{
     api.get(`searchdatabase/${id}`).then(res=>{
@@ -60,7 +61,8 @@ const SearchDatabaseForm = (props)=> {
     onSubmit: (data) => {
         const payload = {
             name:data.name,
-            credentials: JSON.parse(data.credentials)
+            credentials: JSON.parse(data.credentials),
+            parallelize: data.parallelize
         }
         if(data.id){
             api.put(`searchdatabase/${data.id}`,payload).then(res=>{
@@ -121,6 +123,23 @@ const SearchDatabaseForm = (props)=> {
                                     />
                                 </Stack>
                                
+                                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                                    <TextField
+                                        select
+                                        InputLabelProps={{ shrink: true }} 
+                                        fullWidth
+                                        autoComplete="parallelize"
+                                        type="string"
+                                        label="Parallelize"
+                                        {...getFieldProps('parallelize')}
+                                        error={Boolean(touched.parallelize && errors.parallelize)}
+                                        helperText={touched.parallelize && errors.parallelize}
+                                    >
+                                        <MenuItem value="1">True</MenuItem>
+                                        <MenuItem value="0">False</MenuItem>
+                                    </TextField>
+                                </Stack>
+
                                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                                 
                                             

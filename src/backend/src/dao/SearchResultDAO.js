@@ -6,7 +6,11 @@ const defaultFields = [
     'a.id',
     'a.id_search_execution',
     'a.date',
-    'a.slice',
+    'a.query',
+    'a.since',
+    'a.until',
+    'a.database',
+    'a.chunk',
     'a.status',
     'a.content'
  ]
@@ -50,6 +54,10 @@ const getPage = async (queryParams) => {
     }
 
     /* Ordering */
+    if(queryParams.orderBy && queryParams.order) {
+        let orderBy =  queryParams.orderBy
+        query = query.orderBy(queryParams.orderBy, queryParams.order);
+    }
     pagination.sort.forEach(function (value) {
         query = query.orderBy(value.column, value.order);
     });     

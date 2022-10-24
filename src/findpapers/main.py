@@ -20,8 +20,6 @@ app = FastAPI()
 @timeout_decorator.timeout(5)
 @app.post("/search")
 async def read_search(item: Item):
-    #QUERY="[serverless] OR [function-as-a-service] OR [function as a service] OR [backend-as-a-service] OR [backend as a service] OR [aws lambda] OR [google gloud platform] OR [azure functions]"
-    #print(query) 
     if item.query == "":
         raise HTTPException(status_code = 500, detail=  "Query parameter is required")
 

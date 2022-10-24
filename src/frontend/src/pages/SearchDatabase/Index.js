@@ -43,6 +43,7 @@ import { withSnackbar } from '../../hooks/withSnackbar';
 const TABLE_HEAD = [
   { id: 'id', label: 'Id', alignRight: false },
   { id: 'name', label: 'Name', alignRight: false },
+  { id: 'parallelize', label: 'Parallelize', alignRight: false },
   { id: '' }
 ];
 
@@ -63,7 +64,7 @@ const SearchDatabases = (props) => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('searchdatabase-order') ? localStorage.getItem('searchdatabase-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('searchdatabase-order-by') ? localStorage.getItem('searchdatabase-order-by') : 'name');
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('searchdatabase-order-by') ? localStorage.getItem('searchdatabase-order-by') : 'id');
   const [filterName, setFilterName] = useState(localStorage.getItem('searchdatabase-search'));
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('searchdatabase-rows-per-page') ? localStorage.getItem('searchdatabase-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
@@ -97,16 +98,6 @@ const SearchDatabases = (props) => {
     api.list('searchdatabase','backend',params).then(res=>{
       const searchdatabaseList = res.data.data
       if (searchdatabaseList){
-        searchdatabaseList.forEach(searchdatabase=>{
-          api.list(`status/${searchdatabase.id}/${searchdatabase.acronym}`,'orchestrator').then(res=>{
-            if (res && res.data){
-              const status = res.data
-              const new_statuses = statuses
-              new_statuses[searchdatabase.id] = status
-              setStatuses({...statuses,new_statuses})
-            }
-          })
-        })
         setDATALIST(searchdatabaseList)
         setTotal(res.data.total)
       }
@@ -218,7 +209,7 @@ const SearchDatabases = (props) => {
                 <TableBody>
                   {DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, name} = row;
+                      const { id, name, parallelize} = row;
                       const isItemSelected = selected.indexOf(id) !== -1;
                       
                       return (
@@ -244,6 +235,7 @@ const SearchDatabases = (props) => {
                             </Stack>
                           </TableCell>
                           <TableCell align="left">{name}</TableCell>
+                          <TableCell align="left">{(parallelize === 1 ? "True" : "False")}</TableCell>
                           <TableCell align="right">
                             <SearchDatabaseMoreMenu props={props} row={row} getData={getData} />
                           </TableCell>

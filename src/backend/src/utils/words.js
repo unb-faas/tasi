@@ -3,7 +3,6 @@ const daoWordFilter = require('../dao/WordFilterDAO')
 
 module.exports = {
   async frequency (papers, maxWords, weight) {
-    console.log(papers)
     const replaces = await daoWordReplace.getPage({size:999999})
     let words = ""
     for (let i in papers){

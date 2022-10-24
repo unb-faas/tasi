@@ -51,11 +51,11 @@ const Searchs = (props) => {
   const {idExec} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
-  const [order, setOrder] = useState(localStorage.getItem('search-order') ? localStorage.getItem('search-order') : 'asc');
+  const [order, setOrder] = useState(localStorage.getItem('search-result-order') ? localStorage.getItem('search-result-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-order-by') ? localStorage.getItem('search-order-by') : 'name');
-  const [filterName, setFilterName] = useState(localStorage.getItem('search-search'));
-  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-rows-per-page') ? localStorage.getItem('search-rows-per-page') : 5);
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-result-order-by') ? localStorage.getItem('search-result-order-by') : 'id');
+  const [filterName, setFilterName] = useState(localStorage.getItem('search-result-search'));
+  const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-result-rows-per-page') ? localStorage.getItem('search-result-rows-per-page') : 9999999);
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
 

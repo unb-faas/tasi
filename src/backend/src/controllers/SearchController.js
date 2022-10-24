@@ -4,6 +4,7 @@ const daoResult = require('../dao/SearchResultDAO')
 const daoWordReplace = require('../dao/WordReplaceDAO')
 const daoWordFilter = require('../dao/WordFilterDAO')
 const apis = require('../utils/apis')
+const searchTool = require('../utils/search')
 const status = require('../utils/status')
 const words = require('../utils/words')
 const moment = require("moment")
@@ -13,12 +14,14 @@ module.exports = (app) => {
   const getDatabases = async (res) => {
     for (let i in res.data){
         let arrDatabases = []
-        for (let x in res.data[i].search_databases.ids){
-            const search_database_id = res.data[i].search_databases.ids[x]
-            const search_database = await app.controllers.SearchDatabaseController.get({params:{id:search_database_id}})
-            arrDatabases[x] = search_database
+        if (res.data[i].search_databases){
+            for (let x in res.data[i].search_databases.ids){
+                const search_database_id = res.data[i].search_databases.ids[x]
+                const search_database = await app.controllers.SearchDatabaseController.get({params:{id:search_database_id}})
+                arrDatabases[x] = search_database
+            }
+            res.data[i].search_databases.objects = arrDatabases
         }
-        res.data[i].search_databases.objects = arrDatabases
     }
     return res
   }  
@@ -68,7 +71,7 @@ module.exports = (app) => {
         let result = await daoResult.getPage(req.query);
         let papers = []
         for (let i in result.data){
-          if (result.data[i] && result.data[i].content && result.data[i].content.papers){
+          if (result.data[i] && result.data[i].content && result.data[i].content.papers.length){
             papers = papers.concat(result.data[i].content.papers)
           }
         }
@@ -78,6 +81,58 @@ module.exports = (app) => {
         if (req.query.wordcloud){
             result = await words.frequency(papers, req.query.words || 200, req.query.weight || 50)
         }
+
+        if (req.query.ranking){
+          let years = []
+          for (let i in papers){
+            if (papers[i].publication_date){
+              years.push(new Date(papers[i].publication_date).getFullYear())
+            }
+          }
+          const yearsUnique = [ ...new Set(years)]
+          years = []
+          for (let i in yearsUnique){
+            const year = yearsUnique[i]
+            const objYear = {"year":year,papers:[]}
+            for (let x in papers){
+              if (new Date(papers[x].publication_date).getFullYear() == year){
+                objYear.papers.push(papers[x])
+              }
+            }
+            objYear["frequency"] = await words.frequency(objYear.papers, 10, 1)
+            delete objYear["papers"]
+            years.push(objYear)
+          }
+
+          /*const wordsList = []
+          for (let i in years){
+            for (let x in years[i].frequency){
+              wordsList.push(years[i].frequency[x].map(r=>r.text))
+            }
+          }*/
+
+          const temp = years.map(row=>row.frequency.data.map(subrow=>subrow.text))
+          const wordlist = [...new Set(temp.flat())]
+
+          const res = wordlist.map(word=>{
+            const data = []
+            let found = false
+            for (let i in years){
+              found = false
+              for (let x in years[i].frequency.data){
+                if (years[i].frequency.data[x].text == word){
+                  found = true
+                  data.push(years[i].frequency.data[x].value)
+                }
+              }
+              if (!found){
+                data.push(0)
+              }
+            }
+            return {name:word,data:data}
+          })
+          result = {result:res,categories:years.map((i,y)=>i.year)}
+      }
 
         return (res) ? res.json(result) : result;
     } catch (error) {
@@ -126,12 +181,12 @@ module.exports = (app) => {
     const DAYS_WINDOW = 10
     try {
         const { id } = req.params
-        let result = await dao.getById(id)
-        result = await getDatabases({data:[result]})
-        result = result.data
-        result = result[0]
+        let search = await dao.getById(id)
+        search = await getDatabases({data:[search]})
+        search = search.data
+        search = search[0]
         let status_code = 200
-        if (Object.keys(result).length === 0){
+        if (Object.keys(search).length === 0){
           status_code = 404
         }
 
@@ -139,95 +194,95 @@ module.exports = (app) => {
         let until = null
         let days = null
       
-        if (result){
-          since = new Date(result.since)
-          until = new Date(result.until)
+        if (search){
+          since = new Date(search.since)
+          until = new Date(search.until)
           days = Math.floor((until.getTime() - since.getTime()) / (1000*60*60*24))
         }
 
-        const slices = []
-        let since_slice = since.getTime()
-        while (!since_slice || (since_slice + DAYS_WINDOW*(1000*60*60*24)) < until.getTime()){
-          if (since_slice!==since.getTime()){
-            since_slice = since_slice + DAYS_WINDOW*(1000*60*60*24)
-          }  
-          let until_slice = since_slice + DAYS_WINDOW*(1000*60*60*24)
-          if (until_slice > until.getTime()){
-            until_slice = until.getTime()
-          }
-
-          slices.push(
-            {
-              since: moment(new Date(since_slice)).format("YYYY-MM-DD"),
-              until: moment(new Date(until_slice)).format("YYYY-MM-DD")
-            }
-          )
-          since_slice += (1000*60*60*24)
-        }
-
+        const chunks = []
         const tokens = []
-        const databases = []
-        for (let i in result.search_databases.objects){
-            const credential = result.search_databases.objects[i]
-            tokens.push(credential.credentials)
-            databases.push(result.search_databases.objects[i].name)
-        }
-        
-        /*
-          CREATE THE EXECUTION
-        */
-       const newExecution ={
-        id_search: result.id,
-        total_slices: slices.length,
-        date: new Date().toISOString(),
-        status: status.created()
-       }
-       const searchExecution = await daoExecution.create(newExecution)
+        for (let i in search.search_databases.objects){
+            const credential = search.search_databases.objects[i]
+            const database = search.search_databases.objects[i].name
+            if (Object.keys(credential.credentials).length){
+              tokens.push(credential.credentials)
+            }
+            if (parseInt(search.search_databases.objects[i].parallelize,10) === 1){
+                let since_chunk = since.getTime()
+                while (!since_chunk || (since_chunk + DAYS_WINDOW*(1000*60*60*24)) < until.getTime()){
+                if (since_chunk!==since.getTime()){
+                    since_chunk = since_chunk + DAYS_WINDOW*(1000*60*60*24)
+                }  
+                let until_chunk = since_chunk + DAYS_WINDOW*(1000*60*60*24)
+                if (until_chunk > until.getTime()){
+                    until_chunk = until.getTime()
+                }
 
-        for (let i in slices){
+                chunks.push(
+                    {
+                    database: database,
+                    since: moment(new Date(since_chunk)).format("YYYY-MM-DD"),
+                    until: moment(new Date(until_chunk)).format("YYYY-MM-DD")
+                    }
+                )
+                since_chunk += (1000*60*60*24)
+                }
+            } else {
+                chunks.push(
+                    {
+                    database: database,
+                    since: moment(new Date(since)).format("YYYY-MM-DD"),
+                    until: moment(new Date(until)).format("YYYY-MM-DD")
+                    }
+                )
+            }
+        }
+
              /*
-                CREATE THE RESULT
+              CREATE THE EXECUTION
             */
-            const newResult ={
-                id_search_execution: searchExecution[0],
-                slice: i,
+            const newExecution ={
+                id_search: search.id,
+                total_chunks: chunks.length,
                 date: new Date().toISOString(),
                 status: status.created()
             }
-            const searchResult = await daoResult.create(newResult)
+            const searchExecution = await daoExecution.create(newExecution)
 
-             /*
-                MAKE THE SLICE SEARCH IN FINDPAPERS
-            */
-            const params = {
-                query: result.string,
-                since: slices[i].since,
-                until: slices[i].until,
-                databases: databases.join(","),
-                tokens: {"list":tokens}
+            for (let i in chunks){
+                /*
+                    CREATE THE RESULT
+                */
+                const newResult ={
+                    id_search_execution: searchExecution[0],
+                    chunk: i,
+                    query: search.query,
+                    database: chunks[i].database,
+                    since: chunks[i].since,
+                    until: chunks[i].until,
+                    date: new Date().toISOString(),
+                    status: status.created()
+                }
+                const searchResult = await daoResult.create(newResult)
+
+                /*
+                    MAKE THE chunk SEARCH IN FINDPAPERS
+                */
+                const params = {
+                    query: search.string,
+                    since: new Date(chunks[i].since).toS,
+                    until: chunks[i].until,
+                    databases: chunks[i].database,
+                    tokens: {"list":tokens}
+                }
+
+                searchTool.findPapers(searchResult[0], searchExecution[0], params)
             }
-            apis.post("search",params,"findpapers")
-                .catch(async err =>{
-                    let nowStatus = status.error()
-                    nowStatus["date"] = new Date().toISOString()
-                    newResult["status"] = nowStatus 
-                    await daoResult.update(searchResult[0], newResult)
-                    await updateExecutionStatus(searchExecution[0])
-                })
-                .then(async papers=>{
-                    if (papers && papers.data){
-                        newResult["content"] = papers.data
-                        let nowStatus = status.finished()
-                        nowStatus["date"] = new Date().toISOString()
-                        newResult["status"] = nowStatus 
-                        await daoResult.update(searchResult[0], newResult)
-                        await updateExecutionStatus(searchExecution[0])
-                    }
-            })
         
-        }
-        result = slices
-        return (res) ? res.status(status_code).json(result) : result;   
+                
+        search = chunks
+        return (res) ? res.status(status_code).json(search) : search;   
     } catch (error) {
         return res.status(500).json(`Error: ${error}`)
 
@@ -240,18 +295,18 @@ module.exports = (app) => {
     let finished = 0
     for (let i in results.data){
         const result = results.data[i]
-        if (result.status.id === status.finished().id){
+        if (parseInt(result.status.id,10) === parseInt(status.finished().id,10)){
             finished = finished + 1
             newStatus = status.running()
         }
-        if (result.status.id === status.error().id){
+        if (parseInt(result.status.id,10) === parseInt(status.error().id,10)){
             newStatus = status.error()
             break
         }
     }
 
     execution = await daoExecution.getById(execution_id)
-    if (execution.total_slices == finished){
+    if (execution.total_chunks == execution.chunks_finished){
         newStatus = status.finished()
     }
 
@@ -266,6 +321,7 @@ module.exports = (app) => {
     remove,
     update,
     create,
-    play
+    play,
+    updateExecutionStatus
   };
 };

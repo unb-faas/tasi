@@ -47,9 +47,13 @@ const getPage = async (queryParams) => {
     }
 
     /* Ordering */
+    if(queryParams.orderBy && queryParams.order) {
+        query = query.orderBy(queryParams.orderBy, queryParams.order);
+    }
     pagination.sort.forEach(function (value) {
         query = query.orderBy(value.column, value.order);
     });     
+    
     // It always must have a default ordering after all others, 
     // otherwise the listed elements may have unpredictable orders
     query = query.orderBy('a.id', 'asc');

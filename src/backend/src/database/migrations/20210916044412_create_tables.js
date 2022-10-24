@@ -15,6 +15,7 @@ exports.up = function(knex) {
         .createTable('tb_search_database', table => {
             table.increments('id').primary()
             table.string('name',255).notNull()
+            table.integer('parallelize').notNull().default(0)
             table.json('credentials')
         })
 
@@ -32,7 +33,7 @@ exports.up = function(knex) {
             table.increments('id').primary()
             table.integer('id_search').references('id').inTable('tb_search').notNull()
             table.timestamp('date')
-            table.integer('total_slices')
+            table.integer('total_chunks')
             table.json('status')
         })
 
@@ -40,7 +41,11 @@ exports.up = function(knex) {
             table.increments('id').primary()
             table.integer('id_search_execution').references('id').inTable('tb_search_execution').notNull()
             table.timestamp('date')
-            table.integer('slice')
+            table.string('query',9999)
+            table.integer('chunk')
+            table.string('database')
+            table.timestamp('since')
+            table.timestamp('until')
             table.json('status')
             table.json('content')
         })
