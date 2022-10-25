@@ -24,6 +24,7 @@ import {
   Checkbox,
   TableRow,
   TextField,
+  MenuItem,
   TableBody,
   Divider,
   TableCell,
@@ -63,12 +64,13 @@ const Searchs = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-ranking-rows-per-page') ? localStorage.getItem('search-ranking-rows-per-page') : 999999);
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
-  const [words, setWords] = useState(200);
+  const [attribute, setAttribute] = useState('title');
+  const [words, setWords] = useState(5);
   const [weight, setWeight] = useState(50);
 
-  const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
+  const getData = (page,rowsPerPage,orderBy,order,filterName, attribute, words) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
-    api.list(`search/${idExec}/results?ranking=true`,'backend',params).then(res=>{
+    api.list(`search/${idExec}/results?ranking=true&attribute=${attribute}&words=${words}`,'backend',params).then(res=>{
       const searchList = res.data
       if (searchList){
         setDATALIST(searchList)
@@ -94,8 +96,14 @@ const Searchs = (props) => {
     setControl(!control)
   }
 
+  const handleChangeAttribute = (e) => {
+    setAttribute(e.target.value)
+    setDATALIST(null)
+    setControl(!control)
+  }
+
   useEffect(() => {
-    getData(page,rowsPerPage,orderBy,order,filterName, words, weight)
+    getData(page,rowsPerPage,orderBy,order,filterName, attribute, words, weight)
     // const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
     // return()=>clearInterval(interval)
   },[control]); 
@@ -109,8 +117,46 @@ const Searchs = (props) => {
           </Typography>
         </Stack>
         <Card>
+           {DATALIST === null && 
+              <Grid container justifyContent="center" alignItems="center">
+                <Box m={10}>
+                  <CircularProgress />
+                </Box>
+              </Grid>
+            }
             {DATALIST &&
-               <FrequencyChart DATALIST={DATALIST} /> 
+              <Grid container>
+                
+                <Grid item xs={3}>
+                  <Box m={5}>
+                    <TextField
+                        select
+                        value={attribute}
+                        label="Attribute"
+                        onChange={handleChangeAttribute}
+                      >
+                        <MenuItem value="abstract">abstract</MenuItem>
+                        <MenuItem value="author">author</MenuItem>
+                        <MenuItem value="keyword">keyword</MenuItem>
+                        <MenuItem value="title">title</MenuItem>
+                    </TextField>
+                  </Box>
+                </Grid>
+                <Grid item xs={9}>
+                  <Box m={5}>
+                    <TextField 
+                        label="Words" 
+                        variant="outlined" 
+                        value={words}
+                        onChange={handleChangeWords}
+                    />    
+                  </Box>
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <FrequencyChart DATALIST={DATALIST} />
+                </Grid> 
+               </Grid>
             }
         </Card>
         <Box mt={3}>

@@ -27,6 +27,9 @@ import {
   TableBody,
   Divider,
   TableCell,
+  InputLabel,
+  Select,
+  MenuItem,
   Container,
   Typography,
   TableContainer,
@@ -62,12 +65,13 @@ const Searchs = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-wordcloud-rows-per-page') ? localStorage.getItem('search-wordcloud-rows-per-page') : 99999999);
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
+  const [attribute, setAttribute] = useState('title');
   const [words, setWords] = useState(200);
   const [weight, setWeight] = useState(50);
 
   const getData = (page,rowsPerPage,orderBy,order,filterName, words, weight) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
-    api.list(`search/${idExec}/results?wordcloud=true&words=${words}&weight=${weight}`,'backend',params).then(res=>{
+    api.list(`search/${idExec}/results?wordcloud=true&words=${words}&weight=${weight}&attribute=${attribute}`,'backend',params).then(res=>{
       const searchList = res.data.data
       if (searchList){
         setDATALIST(searchList)
@@ -85,11 +89,19 @@ const Searchs = (props) => {
 
   const handleChangeWords = (e) => {
     setWords(e.target.value)
+    setDATALIST(null)
     setControl(!control)
   }
 
   const handleChangeWeight = (e) => {
     setWeight(e.target.value)
+    setDATALIST(null)
+    setControl(!control)
+  }
+
+  const handleChangeAttribute = (e) => {
+    setAttribute(e.target.value)
+    setDATALIST(null)
     setControl(!control)
   }
 
@@ -109,11 +121,31 @@ const Searchs = (props) => {
           </Typography>
         </Stack>
         <Card>
+            {DATALIST === null && 
+            <Grid container justifyContent="center" alignItems="center">
+              <Box m={10}>
+                <CircularProgress />
+              </Box>
+            </Grid>
+            }
             {DATALIST &&
                 <fragment>
                     <Box p={3}>
                       <Grid container>
-                        <Grid item xs={4}>
+                        <Grid item xs={3}>
+                          <TextField
+                            select
+                            value={attribute}
+                            label="Attribute"
+                            onChange={handleChangeAttribute}
+                          >
+                            <MenuItem value="abstract">abstract</MenuItem>
+                            <MenuItem value="author">author</MenuItem>
+                            <MenuItem value="keyword">keyword</MenuItem>
+                            <MenuItem value="title">title</MenuItem>
+                          </TextField>
+                        </Grid>
+                        <Grid item xs={3}>
                           <TextField 
                               label="Words" 
                               variant="outlined" 
@@ -121,7 +153,7 @@ const Searchs = (props) => {
                               onChange={handleChangeWords}
                           />    
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={4}>
                           <TextField 
                               label="Weight" 
                               variant="outlined" 

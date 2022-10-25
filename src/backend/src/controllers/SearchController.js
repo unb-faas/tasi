@@ -79,7 +79,7 @@ module.exports = (app) => {
         result = {data:papers, total:papers.length}
 
         if (req.query.wordcloud){
-            result = await words.frequency(papers, req.query.words || 200, req.query.weight || 50)
+            result = await words.frequency(papers, req.query.attribute || "title", req.query.words || 200, req.query.weight || 50)
         }
 
         if (req.query.ranking){
@@ -99,7 +99,7 @@ module.exports = (app) => {
                 objYear.papers.push(papers[x])
               }
             }
-            objYear["frequency"] = await words.frequency(objYear.papers, 10, 1)
+            objYear["frequency"] = await words.frequency(objYear.papers, req.query.attribute || "title", req.query.words || 10, 1)
             delete objYear["papers"]
             years.push(objYear)
           }

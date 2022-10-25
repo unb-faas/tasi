@@ -2,18 +2,42 @@ const daoWordReplace = require('../dao/WordReplaceDAO')
 const daoWordFilter = require('../dao/WordFilterDAO')
 
 module.exports = {
-  async frequency (papers, maxWords, weight) {
+  async frequency (papers, attribute, maxWords, weight) {
     const replaces = await daoWordReplace.getPage({size:999999})
     let words = ""
     for (let i in papers){
         const paper = papers[i]
-        let abstract = paper.abstract ? paper.abstract.toLowerCase().replace(/\./g, '').replace(/,/g, '') : ""
+        let content = ""
+        switch (attribute) {
+            case "abstract":
+                content = paper.abstract ? paper.abstract : ""
+                break;
+            case "title":
+                content = paper.title ? paper.title : ""
+                break;
+            case "keyword":
+                for (let x in paper.keywords){
+                    content += paper.keywords[x] ? paper.keywords[x]+" " : ""
+                }
+                break;
+            case "author":
+                for (let x in paper.authors){
+                    content += paper.authors[x] ? paper.authors[x].replace(/ /g, '_')+" " : ""
+                }
+                break;
+                
+            default:
+                break;
+        }
+
+        content = content.toLowerCase().replace(/\./g, '').replace(/,/g, '').replace(/  /g, ' ')
+
         for (let i in replaces.data){
             const change = replaces.data[i]
             const re = new RegExp(change.target.toLowerCase(),"g")
-            abstract = abstract.replace(re,change.replace.toLowerCase())
+            content = content.replace(re,change.replace.toLowerCase())
         }
-        words += abstract
+        words += content
     }
     
     words = words.split(" ")
