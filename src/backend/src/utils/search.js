@@ -5,13 +5,16 @@ const daoResult = require('../dao/SearchResultDAO')
 module.exports = {
   async findPapers (id, id_search_execution, params) {
     const newResult = daoResult.getById(id)
-    await apis.post("search",params,"findpapers")
+    return new Promise(async(resolve, reject) => {
+      await apis.post("search",params,"findpapers")
         .catch(async err =>{
             console.log(err)
             let nowStatus = status.error()
             nowStatus["date"] = new Date().toISOString()
+            nowStatus["err"] = err
             newResult["status"] = nowStatus 
             await daoResult.update(id, newResult)
+            reject()
             //await app.controllers.SearchController.updateExecutionStatus(id_search_execution)
         })
         .then(async papers=>{
@@ -21,9 +24,13 @@ module.exports = {
                 nowStatus["date"] = new Date().toISOString()
                 newResult["status"] = nowStatus 
                 await daoResult.update(id, newResult)
+                resolve()
                // await app.controllers.SearchController.updateExecutionStatus(id_search_execution)
             }
     })
+    })
+
+    
   },
   
 };

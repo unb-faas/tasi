@@ -104,17 +104,10 @@ module.exports = (app) => {
             years.push(objYear)
           }
 
-          /*const wordsList = []
-          for (let i in years){
-            for (let x in years[i].frequency){
-              wordsList.push(years[i].frequency[x].map(r=>r.text))
-            }
-          }*/
-
           const temp = years.map(row=>row.frequency.data.map(subrow=>subrow.text))
           const wordlist = [...new Set(temp.flat())]
 
-          const res = wordlist.map(word=>{
+          let res = wordlist.map(word=>{
             const data = []
             let found = false
             for (let i in years){
@@ -131,6 +124,7 @@ module.exports = (app) => {
             }
             return {name:word,data:data}
           })
+          res = res.filter(i=>i.name!=="")
           result = {result:res,categories:years.map((i,y)=>i.year)}
       }
 
@@ -250,6 +244,8 @@ module.exports = (app) => {
             }
             const searchExecution = await daoExecution.create(newExecution)
 
+            let count = 0
+            const requestLimit = 10
             for (let i in chunks){
                 /*
                     CREATE THE RESULT
@@ -257,7 +253,7 @@ module.exports = (app) => {
                 const newResult ={
                     id_search_execution: searchExecution[0],
                     chunk: i,
-                    query: search.query,
+                    query: search.string,
                     database: chunks[i].database,
                     since: chunks[i].since,
                     until: chunks[i].until,
@@ -271,13 +267,20 @@ module.exports = (app) => {
                 */
                 const params = {
                     query: search.string,
-                    since: new Date(chunks[i].since).toS,
+                    since: chunks[i].since,
                     until: chunks[i].until,
                     databases: chunks[i].database,
                     tokens: {"list":tokens}
                 }
 
-                searchTool.findPapers(searchResult[0], searchExecution[0], params)
+                while (count>=requestLimit){
+                  await new Promise(resolve => setTimeout(resolve, 5000));
+                }
+
+                searchTool.findPapers(searchResult[0], searchExecution[0], params).then(()=>{
+                    count--
+                })
+                count++
             }
         
                 
