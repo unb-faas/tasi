@@ -19,7 +19,11 @@ const FrequencyChart = (props) => {
               enabled: true
             }
           },
-          colors:['#fcba03', '#ba452b', '#d6c211','#76d60f','#12dbca','#0f49db','#9f8aa8','#db0fa8','#4d494d', '#825344', '#62804e', '#1a3463' ],
+          //       yellow      red       pink     green      gray     blue      purple    brown    
+          colors:['#fcba03','#ba452b','#f9b9fa','#76d60f','#dbd7db','#0f49db','#9f8aa8','#5e3d27',
+                  '#a88734','#f72b02','#db0fa8','#27400a','#4d494d','#1a3463','#9f8aa8','#7a3405',
+                  '#f7daab','#990202','#f558ce','#bffa78','#d4d2d4','#adcced','#9454c4','#40220e',
+                ],
           responsive: [{
             breakpoint: 480,
             options: {

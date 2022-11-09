@@ -10,7 +10,8 @@ const defaultFields = [
     'a.status',
  ]
  .concat(conn.raw("(select count(*) from tb_search_result as b where id_search_execution = a.id and b.status->>'text' = 'Finished') as chunks_finished "))
- .concat(conn.raw("( WITH papers AS ( SELECT json_array_length(content->'papers') as cPapers FROM tb_search_result where id_search_execution=a.id) SELECT sum(cPapers)  FROM papers) as papers_found"))
+ .concat(conn.raw("(select count(*) from (WITH papers AS ( SELECT json_array_elements(content->'papers') as cPapers FROM tb_search_result where id_search_execution=a.id )SELECT *  FROM papers where cpapers->'publication'->>'category' != 'Conference Proceedings' and cpapers->'publication'->>'category' != 'Book') as main) as papers_found"))
+
 
 const getById = async (id) => {
     /* Querying */

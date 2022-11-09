@@ -72,9 +72,16 @@ module.exports = (app) => {
         let papers = []
         for (let i in result.data){
           if (result.data[i] && result.data[i].content && result.data[i].content.papers.length){
-            papers = papers.concat(result.data[i].content.papers)
+            let newPapers = result.data[i].content.papers
+            for (let x in newPapers){
+              newPapers[x].id_search_result = result.data[i].id
+            }
+            papers = papers.concat(newPapers)
           }
         }
+        papers = papers.filter(row=>{
+            return row.publication.category && row.publication.category.trim() !== "Conference Proceedings" && row.publication.category.trim() !== "Book" && !!row.removed !== true
+        })
     
         result = {data:papers, total:papers.length}
 

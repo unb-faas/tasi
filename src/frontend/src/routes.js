@@ -21,6 +21,9 @@ import SearchWordCloud from './pages/Search/IndexWordCloud';
 import SearchRanking from './pages/Search/IndexRanking';
 import SearchChunks from './pages/Search/IndexChunks';
 
+import Category from './pages/Category/Index';
+import CategoryForm from './pages/Category/Form';
+
 import NotFound from './pages/Common/Page404';
 
 // ----------------------------------------------------------------------
@@ -53,6 +56,11 @@ export default function Router() {
         { path: 'search/:id/executions/ranking/:idExec', element: <SearchRanking /> },
         { path: 'search/:id/executions/chunks/:idExec', element: <SearchChunks /> },
         { path: 'search', element: <Search /> },
+
+        { path: 'category/create', element: <CategoryForm /> },
+        { path: 'category/:id', element: <CategoryForm /> },
+        { path: 'category', element: <Category /> },
+
 
       ]
     },

@@ -65,12 +65,14 @@ module.exports = {
     const frequencyFormated = []
     for (let i in frequencyList){
         const freq = frequencyList[i]
+        if (freq[0]!=="" && freq[0]!=="-"){
             frequencyFormated.push(
                 {
                     text: freq[0],
                     value: freq[1]*weight
                 }
             )
+        }
     }
     return {data:frequencyFormated, total:frequencyFormated.length}
   },

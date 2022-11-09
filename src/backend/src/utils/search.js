@@ -1,6 +1,7 @@
 const apis = require('./apis')
 const status = require('./status')
 const daoResult = require('../dao/SearchResultDAO')
+const crypto = require('crypto');
 
 module.exports = {
   async findPapers (id, id_search_execution, params) {
@@ -19,6 +20,9 @@ module.exports = {
         })
         .then(async papers=>{
             if (papers && papers.data){
+                for (let i in papers.data.papers){
+                  papers.data.papers[i].id = crypto.randomUUID()
+                }
                 newResult["content"] = papers.data
                 let nowStatus = status.finished()
                 nowStatus["date"] = new Date().toISOString()

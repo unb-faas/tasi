@@ -8,4 +8,5 @@ RUN npm i knex -g
 RUN npm i --no-optional
 COPY . /backend
 EXPOSE 3001
-CMD knex migrate:latest && npm start
+#CMD export DEBUG=knex:* && knex migrate:latest && npm start
+CMD export DEBUG=knex:* && knex migrate:latest && npm start

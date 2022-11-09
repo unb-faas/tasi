@@ -451,6 +451,98 @@ module.exports = (app) => {
           #swagger.responses[500] = { description: "Error on server"}
         */
       )
+  
+    router
+      .route(`/searchresult/:id_search_result/:id`)
+        .delete(
+          app.controllers.SearchResultController.removePaper
+          /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+            #swagger.tags = ['Search Result']
+            #swagger.responses[200] = { description: "Successful"}
+            #swagger.responses[404] = { description: "Not Found" }
+            #swagger.responses[500] = { description: "Error on server"}
+          */
+        )
+
+
+    /*******************************************
+     *                   Category
+     ********************************************/
+    router
+    .route(`/category`)
+    .get(
+        app.controllers.CategoryController.list
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+        #swagger.tags = ['Category']
+        #swagger.responses[200] = { description: "Successful"}
+        #swagger.responses[500] = { description: "Error on server"}
+        #swagger.parameters['page'] = {
+                description: 'page',
+                in: 'query',
+                required: false
+            }
+        #swagger.parameters['size'] = {
+                description: 'size',
+                in: 'query',
+                required: false
+            }
+        */
+    )
+
+    .post(
+        app.controllers.CategoryController.create
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+        #swagger.tags = ['Category']
+        #swagger.responses[200] = { description: "Successful"}
+        #swagger.responses[500] = { description: "Error on server"}
+        #swagger.parameters['type'] = {
+            in: 'body',
+            type: "object",
+            description: "update object",
+            schema: {  
+                "name": "",
+            }
+            }
+        
+        */
+    )
+    router
+    .route(`/category/:id`)
+    .get(
+        app.controllers.CategoryController.get
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+        #swagger.tags = ['Category']
+        #swagger.responses[200] = { description: "Successful"}
+        #swagger.responses[404] = { description: "Not Found" }
+        #swagger.responses[500] = { description: "Error on server"}
+        */
+    )
+    .put(
+        app.controllers.CategoryController.update
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+        #swagger.tags = ['Category']
+        #swagger.responses[200] = { description: "Successful"}
+        #swagger.responses[404] = { description: "Not Found" }
+        #swagger.responses[500] = { description: "Error on server"}
+        #swagger.parameters['type'] = {
+            in: 'body',
+            type: "object",
+            description: "update object",
+            schema: {    
+                "name": "",
+            }
+            }
+        */
+    )
+    .delete(
+        app.controllers.CategoryController.remove
+        /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+        #swagger.tags = ['Category']
+        #swagger.responses[200] = { description: "Successful"}
+        #swagger.responses[404] = { description: "Not Found" }
+        #swagger.responses[500] = { description: "Error on server"}
+        */
+    )
      
 
   app.use(app.basePath, router);

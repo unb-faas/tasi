@@ -4,7 +4,7 @@ import linkIcon from '@iconify/icons-bi/link';
 import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
-import outlineCancel from '@iconify/icons-ic/outline-cancel';
+import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import arrowBackOutline from '@iconify/icons-eva/arrow-back-outline';
 import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
 import { Link as RouterLink, useParams } from 'react-router-dom';
@@ -24,10 +24,12 @@ import {
   TableBody,
   TableCell,
   Container,
+  Divider,
   Typography,
   TableContainer,
   TablePagination,
   CircularProgress,
+  Menu, MenuItem, IconButton, ListItemIcon, ListItemText,
   Link as Links,
   Tooltip
 } from '@material-ui/core';
@@ -72,6 +74,14 @@ const Searchs = (props) => {
     })
   }
 
+  const remove = (id_search_result, id) => {
+    api.remove(`searchresult/${id_search_result}/${id}`,'backend').then(res=>{
+      props.showMessageSuccess('Paper removed from results')
+    }).catch(e=>{
+      props.showMessageError(`Request failed ${e}`)
+    })
+  }
+
   useEffect(() => {
     getData(page,rowsPerPage,orderBy,order,filterName)
     const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
@@ -90,13 +100,17 @@ const Searchs = (props) => {
 
         <Card>
           <Scrollbar>
-
-
-
                   <div> 
+                  {DATALIST === null && 
+                  <Grid container justifyContent="center" alignItems="center">
+                    <Box m={10}>
+                      <CircularProgress />
+                    </Box>
+                  </Grid>
+                  }
                   {DATALIST && DATALIST.length > 0 && DATALIST
                     .map((row) => {
-                      const { id, publication_date, title, abstract, doi, authors, number_of_pages} = row;
+                      const { id, id_search_result, publication_date, title, abstract, doi, authors, number_of_pages, publication} = row;
                       return (
                                 <Accordion>
                                     <AccordionSummary
@@ -104,9 +118,18 @@ const Searchs = (props) => {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                     >
-                                        <Typography variant="headline6">{title}</Typography>
+                                      <Typography variant="headline6">{title}</Typography>
+                                      
                                     </AccordionSummary>
                                     <AccordionDetails>
+                                        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(id_search_result, id)}}>
+                                          <ListItemIcon >
+                                            <Tooltip title="Remove from results">
+                                              <Icon icon={trash2Outline} width={24} height={24} />
+                                            </Tooltip>
+                                          </ListItemIcon>
+                                        </MenuItem>
+                                        <Divider />
                                         <Typography style={{fontWeight: 'bold'}} variant="overline">Date:</Typography> 
                                         
                                         <Typography>{publication_date}</Typography>
@@ -126,6 +149,11 @@ const Searchs = (props) => {
                                         <Typography style={{fontWeight: 'bold'}} variant="overline">Pages:</Typography> 
                                         
                                         <Typography>{number_of_pages}</Typography>
+
+                                        <Typography style={{fontWeight: 'bold'}} variant="overline">Publication Type:</Typography> 
+                                        
+                                        <Typography>{publication && publication.category}</Typography>
+                                          
                                     </AccordionDetails>
                                 
                                 </Accordion>

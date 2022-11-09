@@ -1,21 +1,11 @@
 const conn = require('../database/connection')
 const paginationUtils = require('../utils/pagination')
 
-const table='tb_search_result as a'
+const table='tb_category as a'
 const defaultFields = [
     'a.id',
-    'a.id_search_execution',
-    'a.date',
-    'a.query',
-    'a.since',
-    'a.until',
-    'a.database',
-    'a.chunk',
-    'a.status',
-    'a.content',
+    'a.name',
  ]
- 
- 
 
 const getById = async (id) => {
     /* Querying */
@@ -39,18 +29,14 @@ const getPage = async (queryParams) => {
         data: []
     };
 
-
     /* Querying */
     let query = conn(table)
-    //query = query.joinRaw("join json_array_elements(content->'papers') as j on (j->'publication'->>'category' != 'Conference Proceedings')")
-    //query = query.andWhereRaw("a.id in (WITH papers AS ( SELECT id, json_array_elements(content->'papers') as cPapers FROM tb_search_result where id = a.id ) SELECT distinct id FROM papers where id = a.id and cpapers->'publication'->>'category' != 'Conference Proceedings' and cpapers->'publication'->>'category' != 'Book')")     
-
+    
     /* Filtering */
-    if(queryParams.filterSearchExecution) {
-        query = query.andWhereRaw(" a.id_search_execution = ?", [queryParams.filterSearchExecution])                        
+    if(queryParams.filterName) {
+        query = query.andWhereRaw("LOWER(a.name) LIKE ?", [`%${queryParams.filterName.toLowerCase()}%`])                        
     }
-
-
+   
     /* Counting */
     let total = await query.clone().count();
     if(!total) {
@@ -61,7 +47,6 @@ const getPage = async (queryParams) => {
 
     /* Ordering */
     if(queryParams.orderBy && queryParams.order) {
-        let orderBy =  queryParams.orderBy
         query = query.orderBy(queryParams.orderBy, queryParams.order);
     }
     pagination.sort.forEach(function (value) {
@@ -69,12 +54,11 @@ const getPage = async (queryParams) => {
     });     
     // It always must have a default ordering after all others, 
     // otherwise the listed elements may have unpredictable orders
-    query = query.orderBy('a.id', 'asc');
+    query = query.orderBy('a.id', 'asc');   
 
     /* Pagination */
     query = query
                 .select(defaultFields)
-                .distinctOn('id')
                 .offset(pagination.page * pagination.size)
                 .limit(pagination.size);
                  

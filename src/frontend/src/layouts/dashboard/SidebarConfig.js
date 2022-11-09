@@ -1,9 +1,10 @@
 import { Icon } from '@iconify/react';
-import pieChart2Fill from '@iconify/icons-eva/pie-chart-2-fill';
+import dashboardFilled from '@iconify/icons-ant-design/dashboard-filled';
 import databaseFilled from '@iconify/icons-ant-design/database-filled';
 import filterFilled from '@iconify/icons-ant-design/filter-filled';
 import editOutlined from '@iconify/icons-ant-design/edit-outlined';
 import fileSearchOutlined from '@iconify/icons-ant-design/file-search-outlined';
+import appstoreAddOutlined from '@iconify/icons-ant-design/appstore-add-outlined';
 // ----------------------------------------------------------------------
 
 
@@ -13,7 +14,7 @@ const sidebarConfig = [
   {
     title: 'dashboard',
     path: '/dashboard/app',
-    icon: getIcon(pieChart2Fill)
+    icon: getIcon(dashboardFilled)
   },
   {
     title: 'Word Replace',
@@ -24,6 +25,11 @@ const sidebarConfig = [
     title: 'Word Filter',
     path: '/dashboard/wordfilter',
     icon: getIcon(filterFilled)
+  },
+  {
+    title: 'Category',
+    path: '/dashboard/category',
+    icon: getIcon(appstoreAddOutlined)
   },
   {
     title: 'Search Databases',

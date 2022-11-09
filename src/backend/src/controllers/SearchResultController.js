@@ -90,12 +90,31 @@ module.exports = (app) => {
     }
   };
 
+  const removePaper = async (req, res) => {
+    try {
+      const { id, id_search_result } = req.params
+      let result = await dao.getById(id_search_result)
+      let status_code = 200
+      for (let i in result.content.papers){
+        if (result.content.papers[i].id === id){
+          result.content.papers[i].removed = true
+          break
+        }
+      }
+      await dao.update(id_search_result,result)
+      return (res) ? res.status(status_code).json(result) : result;        
+    } catch (error) {
+        return res.status(500).json(`Error: ${error}`)
+    }
+  };
+
   return {
     get,
     list,
     remove,
     update,
     create,
-    replay
+    replay,
+    removePaper
   };
 };
