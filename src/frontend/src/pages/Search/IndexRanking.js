@@ -137,6 +137,7 @@ const Searchs = (props) => {
                       >
                         <MenuItem value="abstract">abstract</MenuItem>
                         <MenuItem value="author">author</MenuItem>
+                        <MenuItem value="category">category</MenuItem>
                         <MenuItem value="keyword">keyword</MenuItem>
                         <MenuItem value="title">title</MenuItem>
                     </TextField>

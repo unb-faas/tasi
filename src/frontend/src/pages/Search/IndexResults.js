@@ -25,6 +25,7 @@ import {
   TableCell,
   Container,
   Divider,
+  TextField,
   Typography,
   TableContainer,
   TablePagination,
@@ -60,6 +61,7 @@ const Searchs = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-result-rows-per-page') ? localStorage.getItem('search-result-rows-per-page') : 9999999);
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
@@ -68,6 +70,18 @@ const Searchs = (props) => {
       if (searchList){
         setDATALIST(searchList)
         setTotal(res.data.total)
+      }
+    }).catch(e=>{
+      props.showMessageError(`Request failed ${e}`)
+    })
+  }
+
+  const getCategories = () =>{
+    const params = {page:0,size:99999,"orderBy":"name","order":"asc"}
+    api.list(`category`,'backend',params).then(res=>{
+      const categories = res.data.data
+      if (categories){
+        setCategories(categories)
       }
     }).catch(e=>{
       props.showMessageError(`Request failed ${e}`)
@@ -84,9 +98,20 @@ const Searchs = (props) => {
 
   useEffect(() => {
     getData(page,rowsPerPage,orderBy,order,filterName)
+    getCategories()
     const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
     return()=>clearInterval(interval)
   },[control]); 
+
+  const handleChangeMultiple = (event,id_search_result,id) => {
+    api.put(`searchresult/${id_search_result}/${id}?selected=${event.target.value.join(',')}`,'backend').then(res=>{
+        setControl(!control)
+      }).catch(e=>{
+        props.showMessageError(`Request failed ${e}`)
+      })
+    };
+
+
 
   
   return (
@@ -111,6 +136,10 @@ const Searchs = (props) => {
                   {DATALIST && DATALIST.length > 0 && DATALIST
                     .map((row) => {
                       const { id, id_search_result, publication_date, title, abstract, doi, authors, number_of_pages, publication} = row;
+                      let { selected_categories} = row;
+                      if (!selected_categories){
+                        selected_categories = []
+                      }
                       return (
                                 <Accordion>
                                     <AccordionSummary
@@ -122,13 +151,40 @@ const Searchs = (props) => {
                                       
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(id_search_result, id)}}>
-                                          <ListItemIcon >
-                                            <Tooltip title="Remove from results">
-                                              <Icon icon={trash2Outline} width={24} height={24} />
-                                            </Tooltip>
-                                          </ListItemIcon>
-                                        </MenuItem>
+                                        <Box pb={5}>
+                                            <Grid container>
+                                                <Grid item xs={1}>
+                                                    <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(id_search_result, id)}}>
+                                                        <ListItemIcon >
+                                                            <Tooltip title="Remove from results">
+                                                            <Icon icon={trash2Outline} width={24} height={24} />
+                                                            </Tooltip>
+                                                        </ListItemIcon>
+                                                    </MenuItem>
+                                                </Grid>
+                                                <Grid item xs={11}>
+                                                    <TextField
+                                                        style={{width:'200px'}}
+                                                        select
+                                                        name="categories"
+                                                        variant="outlined"
+                                                        label="categories"
+                                                        SelectProps={{
+                                                            multiple: true,
+                                                            value: selected_categories,
+                                                            onChange:(event)=>{handleChangeMultiple(event, id_search_result, id)} 
+                                                        }}
+                                                    >
+                                                        <MenuItem value="">-</MenuItem>
+                                                        {categories && categories.map((category) => 
+                                                                <MenuItem value={category.id}>{category.name}</MenuItem>
+                                                        )
+                                                        }
+                                                    </TextField>
+                                                </Grid>
+                                            </Grid>
+                                        </Box>
+                                        
                                         <Divider />
                                         <Typography style={{fontWeight: 'bold'}} variant="overline">Date:</Typography> 
                                         

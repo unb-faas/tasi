@@ -1,5 +1,6 @@
 const daoWordReplace = require('../dao/WordReplaceDAO')
 const daoWordFilter = require('../dao/WordFilterDAO')
+const daoCategory = require('../dao/CategoryDAO')
 
 module.exports = {
   async frequency (papers, attribute, maxWords, weight) {
@@ -18,6 +19,18 @@ module.exports = {
             case "keyword":
                 for (let x in paper.keywords){
                     content += paper.keywords[x] ? paper.keywords[x]+" " : ""
+                }
+                break;
+            case "category":
+                const categories = await daoCategory.getPage({size:999999})
+                for (let x in paper.selected_categories){
+                    //if (paper.selected_categories[x]){
+                        for (let z in categories.data){
+                            if (categories.data[z].id == paper.selected_categories[x]){
+                                content += categories.data[z].name +" " 
+                            }
+                        }
+                    //}
                 }
                 break;
             case "author":

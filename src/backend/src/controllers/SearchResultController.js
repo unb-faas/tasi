@@ -108,6 +108,26 @@ module.exports = (app) => {
     }
   };
 
+  const updatePaper = async (req, res) => {
+    try {
+      const { id, id_search_result } = req.params
+      const { selected } = req.query
+      const selectedCategories = selected.split(",")
+      let result = await dao.getById(id_search_result)
+      let status_code = 200
+      for (let i in result.content.papers){
+        if (result.content.papers[i].id === id){
+          result.content.papers[i].selected_categories = selectedCategories
+          break
+        }
+      }
+      await dao.update(id_search_result,result)
+      return (res) ? res.status(status_code).json(result) : result;        
+    } catch (error) {
+        return res.status(500).json(`Error: ${error}`)
+    }
+  };
+
   return {
     get,
     list,
@@ -115,6 +135,7 @@ module.exports = (app) => {
     update,
     create,
     replay,
-    removePaper
+    removePaper,
+    updatePaper
   };
 };

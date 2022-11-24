@@ -24,6 +24,13 @@ import SearchChunks from './pages/Search/IndexChunks';
 import Category from './pages/Category/Index';
 import CategoryForm from './pages/Category/Form';
 
+import SearchQuestions from './pages/SearchQuestion/Index';
+import SearchQuestionsForm from './pages/SearchQuestion/Form';
+
+import SearchQuestionAnswers from './pages/SearchQuestionAnswer/Index';
+import SearchQuestionAnswersForm from './pages/SearchQuestionAnswer/Form';
+
+
 import NotFound from './pages/Common/Page404';
 
 // ----------------------------------------------------------------------
@@ -50,6 +57,15 @@ export default function Router() {
 
         { path: 'search/create', element: <SearchForm /> },
         { path: 'search/:id', element: <SearchForm /> },
+        
+        { path: 'search/:id/questions/:id_question/answers', element: <SearchQuestionAnswers /> },
+        { path: 'search/:id/questions/:id_question/answers/create', element: <SearchQuestionAnswersForm /> },
+        { path: 'search/:id/questions/:id_question/answers/:id_answer', element: <SearchQuestionAnswersForm /> },
+
+        { path: 'search/:id/questions', element: <SearchQuestions /> },
+        { path: 'search/:id/questions/create', element: <SearchQuestionsForm /> },
+        { path: 'search/:id/questions/:id_question', element: <SearchQuestionsForm /> },
+
         { path: 'search/:id/executions', element: <SearchExecutions /> },
         { path: 'search/:id/executions/results/:idExec', element: <SearchResults /> },
         { path: 'search/:id/executions/wordcloud/:idExec', element: <SearchWordCloud /> },

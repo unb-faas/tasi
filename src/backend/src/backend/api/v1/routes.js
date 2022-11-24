@@ -463,6 +463,23 @@ module.exports = (app) => {
             #swagger.responses[500] = { description: "Error on server"}
           */
         )
+        .put(
+            app.controllers.SearchResultController.updatePaper
+            /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+                #swagger.tags = ['Search Result']
+                #swagger.responses[200] = { description: "Successful"}
+                #swagger.responses[404] = { description: "Not Found" }
+                #swagger.responses[500] = { description: "Error on server"}
+                #swagger.parameters['type'] = {
+                    in: 'body',
+                    type: "object",
+                    description: "update object",
+                    schema: {    
+                    "categories": [],
+                    }
+                }
+            */
+        )
 
 
     /*******************************************
@@ -543,6 +560,178 @@ module.exports = (app) => {
         #swagger.responses[500] = { description: "Error on server"}
         */
     )
+
+
+  /*******************************************
+  *               Search Question
+  ********************************************/
+   router
+   .route(`/searchquestion`)
+     .get(
+       app.controllers.SearchQuestionController.list
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['page'] = {
+                description: 'page',
+                in: 'query',
+                required: false
+            }
+         #swagger.parameters['size'] = {
+                description: 'size',
+                in: 'query',
+                required: false
+            }
+         #swagger.parameters['filterSearch'] = {
+                description: 'filterSearch',
+                in: 'query',
+                required: false
+            }
+         */
+     )
+     .post(
+       app.controllers.SearchQuestionController.create
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['type'] = {
+             in: 'body',
+             type: "object",
+             description: "update object",
+             schema: {  
+              "id_search": "",
+              "description": ""
+            }
+          }
+         
+       */
+     )
+   router
+   .route(`/searchquestion/:id`)
+     .get(
+       app.controllers.SearchQuestionController.get
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+       */
+     )
+     .put(
+       app.controllers.SearchQuestionController.update
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['type'] = {
+             in: 'body',
+             type: "object",
+             description: "update object",
+             schema: {    
+              "id_search":"",
+              "description": ""
+            }
+          }
+        */
+     )
+     .delete(
+       app.controllers.SearchQuestionController.remove
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+         */
+     )
+     
+
+  /*******************************************
+  *         Search Question Answer
+  ********************************************/
+   router
+   .route(`/searchquestionanswer`)
+     .get(
+       app.controllers.SearchQuestionAnswerController.list
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question Answer']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['page'] = {
+                description: 'page',
+                in: 'query',
+                required: false
+            }
+         #swagger.parameters['size'] = {
+                description: 'size',
+                in: 'query',
+                required: false
+            }
+         #swagger.parameters['filterSearchQuestion'] = {
+                description: 'filterSearchQuestion',
+                in: 'query',
+                required: false
+            }
+         */
+     )
+     .post(
+       app.controllers.SearchQuestionAnswerController.create
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question Answer']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['type'] = {
+             in: 'body',
+             type: "object",
+             description: "update object",
+             schema: {  
+              "id_search_question": "",
+              "description": ""
+            }
+          }
+         
+       */
+     )
+   router
+   .route(`/searchquestionanswer/:id`)
+     .get(
+       app.controllers.SearchQuestionAnswerController.get
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question Answer']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+       */
+     )
+     .put(
+       app.controllers.SearchQuestionAnswerController.update
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question Answer']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+         #swagger.parameters['type'] = {
+             in: 'body',
+             type: "object",
+             description: "update object",
+             schema: {    
+              "id_search_question":"",
+              "description": ""
+            }
+          }
+        */
+     )
+     .delete(
+       app.controllers.SearchQuestionAnswerController.remove
+       /* >>> SWAGGER DOCUMENTATION (DONT DELETE) <<<
+         #swagger.tags = ['Search Question Answer']
+         #swagger.responses[200] = { description: "Successful"}
+         #swagger.responses[404] = { description: "Not Found" }
+         #swagger.responses[500] = { description: "Error on server"}
+         */
+     )
      
 
   app.use(app.basePath, router);
