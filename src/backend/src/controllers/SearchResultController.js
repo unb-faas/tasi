@@ -111,13 +111,18 @@ module.exports = (app) => {
   const updatePaper = async (req, res) => {
     try {
       const { id, id_search_result } = req.params
-      const { selected } = req.query
-      const selectedCategories = selected.split(",")
+      const { selected, id_answer, id_question } = req.query
+      const selectedCategories = selected ? selected.split(",") : []
       let result = await dao.getById(id_search_result)
       let status_code = 200
       for (let i in result.content.papers){
         if (result.content.papers[i].id === id){
           result.content.papers[i].selected_categories = selectedCategories
+          if (result.content.papers[i].selected_answers){
+            result.content.papers[i].selected_answers[id_question] = id_answer
+          } else {
+            result.content.papers[i].selected_answers = {id_question: id_answer}
+          }
           break
         }
       }

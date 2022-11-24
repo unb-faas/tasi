@@ -20,6 +20,7 @@ import SearchResults from './pages/Search/IndexResults';
 import SearchWordCloud from './pages/Search/IndexWordCloud';
 import SearchRanking from './pages/Search/IndexRanking';
 import SearchChunks from './pages/Search/IndexChunks';
+import SearchQuiz from './pages/Search/IndexQuiz';
 
 import Category from './pages/Category/Index';
 import CategoryForm from './pages/Category/Form';
@@ -71,6 +72,7 @@ export default function Router() {
         { path: 'search/:id/executions/wordcloud/:idExec', element: <SearchWordCloud /> },
         { path: 'search/:id/executions/ranking/:idExec', element: <SearchRanking /> },
         { path: 'search/:id/executions/chunks/:idExec', element: <SearchChunks /> },
+        { path: 'search/:id/executions/quiz/:idExec', element: <SearchQuiz /> },
         { path: 'search', element: <Search /> },
 
         { path: 'category/create', element: <CategoryForm /> },

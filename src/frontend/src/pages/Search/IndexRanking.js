@@ -54,7 +54,7 @@ import FrequencyChart  from './charts/Frequency';
 
 const Searchs = (props) => {
   const wordcloudRef = createRef();
-  const {idExec} = useParams();
+  const {id, idExec} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('search-ranking-order') ? localStorage.getItem('search-ranking-order') : 'asc');
@@ -164,7 +164,7 @@ const Searchs = (props) => {
           <Button
                 variant="contained"
                 component={RouterLink}
-                to="../../../.."
+                to={`../../../../${id}/executions`}
                 color="info"
                 startIcon={<Icon icon={arrowBackOutline} />}
             >

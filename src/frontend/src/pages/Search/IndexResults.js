@@ -51,7 +51,7 @@ import { withSnackbar } from '../../hooks/withSnackbar';
 // ----------------------------------------------------------------------
 
 const Searchs = (props) => {
-  const {idExec} = useParams();
+  const {id, idExec} = useParams();
   const [control, setControl] = useState(true);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('search-result-order') ? localStorage.getItem('search-result-order') : 'asc');
@@ -62,6 +62,37 @@ const Searchs = (props) => {
   const [DATALIST, setDATALIST] = useState(null);
   const [total, setTotal] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [questions, setQuestions] = useState([])
+  const [answers, setAnswers] = useState({})
+
+  const getQuestions = () => {
+    const params = {page:0,size:9999,"orderBy":"id","order":"asc","filterSearch":id}
+    api.list(`searchquestion`,'backend',params).then(res=>{
+      const questionList = res.data.data
+      if (questionList){
+        setQuestions(questionList)
+        questionList.forEach(element => {
+          getAnswers(element.id)
+        });
+      }
+    }).catch(e=>{
+      props.showMessageError(`Request failed ${e}`)
+    })
+  }
+
+  const getAnswers = (idQuestion) => {
+    const params = {page:0,size:9999,"orderBy":"id","order":"asc","filterSearchQuestion":idQuestion}
+    api.list(`searchquestionanswer`,'backend',params).then(res=>{
+      const answerList = res.data.data
+      if (answerList){
+        answers[idQuestion] = answerList
+        setAnswers(answers)
+      }
+    }).catch(e=>{
+      props.showMessageError(`Request failed ${e}`)
+    })
+  }
+
 
   const getData = (page,rowsPerPage,orderBy,order,filterName) =>{
     const params = {page,size:rowsPerPage,"orderBy":orderBy,"order":order,provider_active:1,"filterName":filterName}
@@ -99,6 +130,7 @@ const Searchs = (props) => {
   useEffect(() => {
     getData(page,rowsPerPage,orderBy,order,filterName)
     getCategories()
+    getQuestions()
     const interval=setInterval(getData, 5000, page, rowsPerPage, orderBy, order,filterName)
     return()=>clearInterval(interval)
   },[control]); 
@@ -110,6 +142,14 @@ const Searchs = (props) => {
         props.showMessageError(`Request failed ${e}`)
       })
     };
+
+    const handleChangeAnswer = (event,id_search_result,id, id_question) => {
+      api.put(`searchresult/${id_search_result}/${id}?id_answer=${event.target.value}&id_question=${id_question}`,'backend').then(res=>{
+          setControl(!control)
+        }).catch(e=>{
+          props.showMessageError(`Request failed ${e}`)
+        })
+      };
 
 
 
@@ -136,9 +176,12 @@ const Searchs = (props) => {
                   {DATALIST && DATALIST.length > 0 && DATALIST
                     .map((row) => {
                       const { id, id_search_result, publication_date, title, abstract, doi, authors, number_of_pages, publication} = row;
-                      let { selected_categories} = row;
+                      let { selected_categories, selected_answers} = row;
                       if (!selected_categories){
                         selected_categories = []
+                      }
+                      if (!selected_answers){
+                        selected_answers = []
                       }
                       return (
                                 <Accordion>
@@ -162,7 +205,7 @@ const Searchs = (props) => {
                                                         </ListItemIcon>
                                                     </MenuItem>
                                                 </Grid>
-                                                <Grid item xs={11}>
+                                                <Grid item xs={6}>
                                                     <TextField
                                                         style={{width:'200px'}}
                                                         select
@@ -181,6 +224,34 @@ const Searchs = (props) => {
                                                         )
                                                         }
                                                     </TextField>
+                                                </Grid>
+                                                <Grid item xs={5}>
+                                                  {typeof questions !== "undefined" && questions.map(q => (
+                                                    <Grid container>
+                                                      <Grid item xs={12}>
+                                                        <Typography variant="overline">{q.description}</Typography>
+                                                      </Grid>
+                                                      <Grid item xs={12}>
+                                                        <TextField
+                                                            style={{width:'200px'}}
+                                                            select
+                                                            name="answers"
+                                                            variant="outlined"
+                                                            label="answer"
+                                                            SelectProps={{
+                                                                value: selected_answers[q.id],
+                                                                onChange:(event)=>{handleChangeAnswer(event, id_search_result, id, q.id)} 
+                                                            }}
+                                                        >
+                                                            <MenuItem value="">-</MenuItem>
+                                                            {answers && answers[q.id] && answers[q.id].map((answer) => 
+                                                                    <MenuItem value={answer.id}>{answer.description}</MenuItem>
+                                                            )
+                                                            }
+                                                        </TextField>
+                                                      </Grid>
+                                                    </Grid>
+                                                  ))}
                                                 </Grid>
                                             </Grid>
                                         </Box>
@@ -225,7 +296,7 @@ const Searchs = (props) => {
           <Button
                 variant="contained"
                 component={RouterLink}
-                to="../../../.."
+                to={`../../../../${id}/executions`}
                 color="info"
                 startIcon={<Icon icon={arrowBackOutline} />}
             >

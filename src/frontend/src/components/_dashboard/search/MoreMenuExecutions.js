@@ -7,6 +7,7 @@ import cloudOutlined from '@iconify/icons-ant-design/cloud-outlined';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import trophyOutlined from '@iconify/icons-ant-design/trophy-outlined';
 import appstoreOutlined from '@iconify/icons-ant-design/appstore-outlined';
+import barChartOutlined from '@iconify/icons-ant-design/bar-chart-outlined';
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@material-ui/core';
 import { useConfirm } from 'material-ui-confirm';
@@ -86,6 +87,13 @@ const SearchMoreMenuExecutions = (props) => {
             <Icon icon={trophyOutlined} width={24} height={24} />
           </ListItemIcon>
           <ListItemText primary="Ranking" primaryTypographyProps={{ variant: 'body2' }} />
+        </MenuItem>
+
+        <MenuItem component={RouterLink} to={`quiz/${row.id}`} sx={{ color: 'text.primary' }}>
+          <ListItemIcon>
+            <Icon icon={barChartOutlined} width={24} height={24} />
+          </ListItemIcon>
+          <ListItemText primary="Quiz" primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
         
       </Menu>

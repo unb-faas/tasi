@@ -1,13 +1,8 @@
-import { filter } from 'lodash';
 import { Icon } from '@iconify/react';
-import linkIcon from '@iconify/icons-bi/link';
 import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
-import outlineCancel from '@iconify/icons-ic/outline-cancel';
-import alertTriangleOutline from '@iconify/icons-eva/alert-triangle-outline';
+import arrowBackOutline from '@iconify/icons-eva/arrow-back-outline';
 import { Link as RouterLink, useParams } from 'react-router-dom';
-import Modal from '@mui/material/Modal';
 
 // material
 import {
@@ -15,8 +10,6 @@ import {
   Table,
   Stack,
   Box,
-  Chip,
-  Grid,
   Button,
   Checkbox,
   TableRow,
@@ -26,9 +19,7 @@ import {
   Typography,
   TableContainer,
   TablePagination,
-  CircularProgress,
   Link as Links,
-  Tooltip
 } from '@material-ui/core';
 // components
 import Page from '../../components/Page';
@@ -164,7 +155,7 @@ const SearchQuestions = (props) => {
     p: 4,
   };
   return (
-    <Page title="Serch Questions | Tasi Framework">
+    <Page title="Search Questions | Tasi Framework">
       <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -266,6 +257,18 @@ const SearchQuestions = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
+
+        <Box mt={3}>
+            <Button
+                variant="contained"
+                component={RouterLink}
+                to="../.."
+                color="info"
+                startIcon={<Icon icon={arrowBackOutline} />}
+            >
+                Back
+            </Button>
+        </Box>
       </Container>
 
     </Page>

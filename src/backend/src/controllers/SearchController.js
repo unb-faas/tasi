@@ -1,5 +1,6 @@
 const dao = require('../dao/SearchDAO')
 const daoExecution = require('../dao/SearchExecutionDAO')
+const daoSearchQuestionAnswer = require('../dao/SearchQuestionAnswerDAO')
 const daoResult = require('../dao/SearchResultDAO')
 const daoWordReplace = require('../dao/WordReplaceDAO')
 const daoWordFilter = require('../dao/WordFilterDAO')
@@ -133,6 +134,34 @@ module.exports = (app) => {
           })
           res = res.filter(i=>i.name!=="")
           result = {result:res,categories:years.map((i,y)=>i.year)}
+      }
+
+      if (req.query.quiz){
+        const answers = {}
+        const labels = []
+        const series = []
+        let answered = 0
+        for (let i in papers){
+          const paper = papers[i]
+          if (paper.selected_answers){
+            for (let id_question in paper.selected_answers){
+              if (id_question === req.query.id_question){
+                if (typeof answers[paper.selected_answers[id_question]] != "undefined"){
+                  answers[paper.selected_answers[id_question]]++
+                } else {
+                  answers[paper.selected_answers[id_question]]= 1
+                }
+                answered++
+              }
+            }
+          }
+        }
+        for (let i in answers){
+          const answersObj = await daoSearchQuestionAnswer.getById(i)
+          labels.push(answersObj.description)
+          series.push(answers[i])
+        }
+        result = {series: series, labels: labels, total: papers.length, answered: answered}
       }
 
         return (res) ? res.json(result) : result;
