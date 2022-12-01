@@ -12,6 +12,7 @@ app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb',extended: true}));
 app.use('/csvs', express.static('/csvs'));
 app.use('/jsons', express.static('/jsons'));
+app.use('/papers', express.static('/papers'));
 
 app.get('/', function(req, res) {
   res.redirect(`/backend/api-doc`);

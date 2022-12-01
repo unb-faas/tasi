@@ -4,6 +4,25 @@ const daoResult = require('../dao/SearchResultDAO')
 const crypto = require('crypto');
 
 module.exports = {
+
+  async getTokens (search) {
+    const tokens = []
+    console.log("--------------------")
+    
+    console.log(search)
+    
+    
+    console.log("--------------------")
+    for (let i in search.search_databases.objects){
+        const credential = search.search_databases.objects[i]
+        const database = search.search_databases.objects[i].name
+        if (Object.keys(credential.credentials).length){
+          tokens.push(credential.credentials)
+        }
+    }
+    return tokens
+  },
+
   async findPapers (id, id_search_execution, params) {
     const newResult = daoResult.getById(id)
     return new Promise(async(resolve, reject) => {

@@ -2,20 +2,15 @@ import axios from "axios"
 
 const urls = {
   backend: process.env.REACT_APP_BACKEND_URL,
-  orchestrator: process.env.REACT_APP_ORCHESTRATOR_URL,
-  benchmarker: process.env.REACT_APP_BENCHMARKER_URL
+  findpapers: process.env.REACT_APP_FINDPAPERS_URL,
 }
 
 const backend = axios.create({
   baseURL: urls.backend
 });
 
-const orchestrator = axios.create({
-  baseURL: urls.orchestrator
-});
-
-const benchmarker = axios.create({
-  baseURL: urls.benchmarker
+const findpapers = axios.create({
+  baseURL: urls.findpapers
 });
 
 const list = async (object, api = 'backend', params) => {
@@ -28,14 +23,6 @@ const list = async (object, api = 'backend', params) => {
   switch (api) {
     case "backend":
       return backend(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "orchestrator":
-      return orchestrator(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "benchmarker":
-      return benchmarker(axiosOptions).catch(err=>{
         console.log(err)
       })
     default:
@@ -54,14 +41,6 @@ const get = async (object,api="backend") => {
   switch (api) {
     case "backend":
       return backend(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "orchestrator":
-      return orchestrator(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "benchmarker":
-      return benchmarker(axiosOptions).catch(err=>{
         console.log(err)
       })
     default:
@@ -83,12 +62,8 @@ const post = async (object, dt , api="backend") => {
       return backend(axiosOptions).catch(err=>{
         console.log(err)
       })
-    case "orchestrator":
-      return orchestrator(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "benchmarker":
-      return benchmarker(axiosOptions).catch(err=>{
+    case "findpapers":
+      return findpapers(axiosOptions).catch(err=>{
         console.log(err)
       })
     default:
@@ -110,14 +85,6 @@ const put = async (object, dt , api="backend") => {
       return backend(axiosOptions).catch(err=>{
         console.log(err)
       })
-    case "orchestrator":
-      return orchestrator(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "benchmarker":
-      return benchmarker(axiosOptions).catch(err=>{
-        console.log(err)
-      })
     default:
       break;
   }
@@ -134,14 +101,6 @@ const remove = async (object,api="backend") => {
   switch (api) {
     case "backend":
       return backend(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "orchestrator":
-      return orchestrator(axiosOptions).catch(err=>{
-        console.log(err)
-      })
-    case "benchmarker":
-      return benchmarker(axiosOptions).catch(err=>{
         console.log(err)
       })
     default:

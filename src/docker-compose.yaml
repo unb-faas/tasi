@@ -27,7 +27,8 @@ services:
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
       - REACT_APP_PORT=3000
-      - REACT_APP_BACKEND_URL=${BACKEND_URL}
+      - REACT_APP_BACKEND_URL=${BACKEND_URL}      
+      - REACT_APP_FINDPAPERS_URL=${FINDPAPERS_URL}
       
   findpapers:
     #container_name: "tasi-findpapers-${ENVIRONMENT}"
@@ -40,8 +41,10 @@ services:
       - "8000"
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
+      
     volumes:
       - /usr/logs/findpapers:/tmp/logs
+      - ./data/papers:/papers
     links: 
       - database
     networks:
@@ -67,6 +70,7 @@ services:
       - DB_HOST=${DATABASE_HOST}
       - REACT_APP_FINDPAPERS_URL=${FINDPAPERS_URL}
     volumes:
+      - ./data/papers:/papers
       - ./data/csvs:/csvs
       - ./data/jsons:/jsons
       - /usr/logs/backend:/tmp/logs

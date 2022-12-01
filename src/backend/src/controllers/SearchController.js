@@ -68,7 +68,15 @@ module.exports = (app) => {
   const listResults = async (req, res) => {
     try {
         const { id } = req.params
+        let { page, size } = req.query
+
+        page = page ? parseInt(page) : 0
+        size ? parseInt(size) : 20
+
+        req.query["page"] = 0
+        req.query["size"] = 999999
         req.query["filterSearchExecution"] = id
+
         let result = await daoResult.getPage(req.query);
         let papers = []
         for (let i in result.data){
@@ -83,8 +91,10 @@ module.exports = (app) => {
         papers = papers.filter(row=>{
             return row.publication.category && row.publication.category.trim() !== "Conference Proceedings" && row.publication.category.trim() !== "Book" && !!row.removed !== true
         })
-    
-        result = {data:papers, total:papers.length}
+
+        const total = papers.length
+        papers = papers.slice(page*size, (page*size)+parseInt(size))
+        result = {data:papers, total:total,  qtde:papers.length}
 
         if (req.query.wordcloud){
             result = await words.frequency(papers, req.query.attribute || "title", req.query.words || 200, req.query.weight || 50)
@@ -231,13 +241,13 @@ module.exports = (app) => {
         }
 
         const chunks = []
-        const tokens = []
+        const tokens = await searchTool.getTokens(search)
         for (let i in search.search_databases.objects){
             const credential = search.search_databases.objects[i]
             const database = search.search_databases.objects[i].name
-            if (Object.keys(credential.credentials).length){
-              tokens.push(credential.credentials)
-            }
+            // . if (Object.keys(credential.credentials).length){
+            // .   tokens.push(credential.credentials)
+            // . }
             if (parseInt(search.search_databases.objects[i].parallelize,10) === 1){
                 let since_chunk = since.getTime()
                 while (!since_chunk || (since_chunk + DAYS_WINDOW*(1000*60*60*24)) < until.getTime()){
@@ -352,6 +362,28 @@ module.exports = (app) => {
     await daoExecution.update(execution_id, {status:newStatus})
   }
 
+  const downloadPDF = async (req, res) => {
+    try{
+        const { id } = req.params
+        const result = await daoResult.getById(id)
+        const execution = await daoExecution.getById(result.id_search_execution)
+        let search = await dao.getById(execution.id_search)
+        search = await getDatabases({data:[search]})
+        search = search.data
+        search = search[0]
+        let status_code = 200
+        req.body["tokens"] = await searchTool.getTokens(search)
+        const download = await apis.post('download',req.body,'findpapers')
+        if (!download.data.file){
+          status_code = 404
+        }
+        return (res) ? res.status(status_code).json(download.data) : search;   
+    } catch (error) {
+        return res.status(500).json(`Error: ${error}`)
+
+    }  
+  }
+
   return {
     get,
     list,
@@ -361,6 +393,7 @@ module.exports = (app) => {
     update,
     create,
     play,
-    updateExecutionStatus
+    updateExecutionStatus,
+    downloadPDF
   };
 };
