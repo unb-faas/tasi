@@ -136,7 +136,7 @@ const Wordreplaces = (props) => {
   };
 
   const handleChangePage = (event, newPage) => {
-    localStorage.setItem('wordreplace-page', event.target.value);
+    localStorage.setItem('wordreplace-page', parseInt(event.target.value,10));
     setPage(newPage);
     getData(newPage,rowsPerPage)
     setControl(!control)

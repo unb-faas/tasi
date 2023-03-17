@@ -91,7 +91,7 @@ async def read_search(item: Item):
 
 
     seed(1)
-    id = random()
+    id = random.randint(0,99999999)
     file = 'search_results' + str(id) + '.json'
     cmd = 'findpapers search '+file + ' --databases ' + item.databases + ' --limit ' + str(item.limit) + ' -q "' + item.query + '"'
     

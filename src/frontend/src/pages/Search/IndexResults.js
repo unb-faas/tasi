@@ -4,6 +4,8 @@ import linkIcon from '@iconify/icons-bi/link';
 import React, { useState, useEffect, useRef } from 'react';
 import plusFill from '@iconify/icons-eva/plus-fill';
 import checkCircleFilled from '@iconify/icons-ant-design/check-circle-filled';
+import checkCircleOutlined from '@iconify/icons-ant-design/check-circle-outlined';
+import checkCircletwotone from '@iconify/icons-ant-design/check-circle-twotone';
 import trash2Outline from '@iconify/icons-eva/trash-2-outline';
 import arrowBackOutline from '@iconify/icons-eva/arrow-back-outline';
 import downloadOutlined from '@iconify/icons-ant-design/download-outlined';
@@ -35,6 +37,7 @@ import {
   Link as Links,
   Tooltip
 } from '@material-ui/core';
+import { Markup } from 'interweave';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -166,7 +169,7 @@ const Searchs = (props) => {
       };
 
       const handleChangePage = (event, newPage) => {
-        localStorage.setItem('search-result-page', event.target.value);
+        localStorage.setItem('search-result-page', parseInt(event.target.value,10));
         setPage(newPage);
         setDATALIST(null)
         setControl(!control)
@@ -203,14 +206,48 @@ const Searchs = (props) => {
                   }
                   {DATALIST && DATALIST.length > 0 && DATALIST
                     .map((row, idx) => {
-                      const { id, id_search_result, publication_date, title, abstract, doi, authors, number_of_pages, publication} = row;
-                      let { selected_categories, selected_answers} = row;
+                      const { id, id_search_result, publication_date, title, doi, authors, number_of_pages, publication} = row;
+                      let iconColor = false
+                      let { selected_categories, selected_answers, abstract} = row;
                       if (!selected_categories){
                         selected_categories = []
+                      } 
+
+                      if (selected_categories.length){
+                        iconColor = 'blue'
                       }
+
                       if (!selected_answers){
                         selected_answers = []
                       }
+
+                      if (categories && abstract){
+                        const s = categories.map(cat=>{
+                            abstract = abstract.replace(cat.name, `<span style="color:red"><b>${cat.name}</b></span>`)
+                            return cat
+                        })
+                      }
+
+                      if (questions && abstract){
+                        let countAnswers = 0
+                        const tmp = questions.map(q=>{
+                            if (answers[q.id]){
+                                const tmp2 = answers[q.id].map(a=>{
+                                    abstract = abstract.replace(a.description, `<span style="color:blue"><b>${a.description}</b></span>`)
+                                                                       return a
+                                })
+                            }
+                            if (selected_answers[q.id]){
+                                iconColor = 'orange'
+                                countAnswers += 1
+                            }
+                            return q
+                        })
+                        if (countAnswers>0 && countAnswers === questions.length){
+                            iconColor = 'green'
+                        }
+                      }
+
                       return (
                                 <Accordion>
                                     <AccordionSummary
@@ -218,16 +255,28 @@ const Searchs = (props) => {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                     >
-                                      <Typography variant="headline6">{title}</Typography>
+                                        <Typography variant="headline6"> 
+                                            { (iconColor) ? ( 
+
+                                                <Icon icon={checkCircleFilled} style={{color:iconColor}} width={16} height={16} />
+                                                ) : (<span />)
+                                            }
+                                            {title}
+                                        </Typography>
                                       
                                     </AccordionSummary>
                                     <AccordionDetails>
                                       <Grid container>
                                         <Grid item xs={6}>
+                                          <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Words in <span style={{color:'red'}}>red</span> matched with any category and in <span style={{color:'blue'}}>blue</span>  matched with any answer. </Typography> 
+                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Title:</Typography> 
+                                          <Typography>{title}</Typography>
                                           <Typography style={{fontWeight: 'bold'}} variant="overline">Date:</Typography> 
                                           <Typography>{publication_date}</Typography>
                                           <Typography style={{fontWeight: 'bold'}} variant="overline">Abstract:</Typography> 
-                                          <Typography>{abstract}</Typography>
+                                          <p>
+                                          <Markup content={abstract} />
+                                          </p>
                                           <Typography style={{fontWeight: 'bold'}} variant="overline">DOI:</Typography> 
                                           <Typography>{doi}</Typography>
                                           <Typography style={{fontWeight: 'bold'}} variant="overline">Authors:</Typography> 
