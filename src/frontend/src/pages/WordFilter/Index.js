@@ -63,7 +63,7 @@ const WordFilters = (props) => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('wordfilter-order') ? localStorage.getItem('wordfilter-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordfilter-order-by') ? localStorage.getItem('wordfilter-order-by') : 'name');
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('wordfilter-order-by') ? localStorage.getItem('wordfilter-order-by') : 'word');
   const [filterName, setFilterName] = useState(localStorage.getItem('wordfilter-search'));
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('wordfilter-rows-per-page') ? localStorage.getItem('wordfilter-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);

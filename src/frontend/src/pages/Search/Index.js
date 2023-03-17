@@ -68,7 +68,7 @@ const Searchs = (props) => {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState(localStorage.getItem('search-order') ? localStorage.getItem('search-order') : 'asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-order-by') ? localStorage.getItem('search-order-by') : 'name');
+  const [orderBy, setOrderBy] = useState(localStorage.getItem('search-order-by') ? localStorage.getItem('search-order-by') : 'description');
   const [filterName, setFilterName] = useState(localStorage.getItem('search-search'));
   const [rowsPerPage, setRowsPerPage] = useState(localStorage.getItem('search-rows-per-page') ? localStorage.getItem('search-rows-per-page') : 5);
   const [DATALIST, setDATALIST] = useState([]);
