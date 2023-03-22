@@ -196,6 +196,44 @@ const Searchs = (props) => {
 
         <Card>
           <Scrollbar>
+                <Grid container justifyContent="center" alignItems="center">
+                  <Grid item xs="4">
+                    <Box m={2}>
+                    <Grid container>
+                      <Grid item xs="2">
+                        <Icon icon={checkCircleFilled} style={{color:'blue'}} width={16} height={16} />
+                      </Grid>
+                      <Grid item xs="10">
+                        <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Categorized</Typography>
+                      </Grid>
+                    </Grid>
+                    </Box>
+                  </Grid>
+                  <Grid item xs="4">
+                    <Box m={2}>
+                      <Grid container>
+                        <Grid item xs="2">
+                          <Icon icon={checkCircleFilled} style={{color:'orange'}} width={16} height={16} />
+                        </Grid>
+                        <Grid item xs="10">
+                          <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Some questions answered</Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Grid>
+                  <Grid item xs="4">
+                    <Box m={2}>
+                      <Grid container>
+                        <Grid item xs="2">
+                          <Icon icon={checkCircleFilled} style={{color:'green'}} width={16} height={16} />
+                        </Grid>
+                        <Grid item xs="10">
+                          <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Categorized and all questions answered</Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  </Grid>
+                </Grid>
                   <div> 
                   {DATALIST === null && 
                   <Grid container justifyContent="center" alignItems="center">
@@ -204,7 +242,8 @@ const Searchs = (props) => {
                     </Box>
                   </Grid>
                   }
-                  {DATALIST && DATALIST.length > 0 && DATALIST
+                  {
+                  DATALIST && DATALIST.length > 0 && DATALIST
                     .map((row, idx) => {
                       const { id, id_search_result, publication_date, title, doi, authors, number_of_pages, publication} = row;
                       let iconColor = false
@@ -249,124 +288,128 @@ const Searchs = (props) => {
                       }
 
                       return (
-                                <Accordion>
-                                    <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                    >
-                                        <Typography variant="headline6"> 
-                                            { (iconColor) ? ( 
+                                <div>
+                                  <Accordion>
+                                      <AccordionSummary
+                                      expandIcon={<ExpandMoreIcon />}
+                                      aria-controls="panel1a-content"
+                                      id="panel1a-header"
+                                      >
+                                          <Typography variant="headline6"> 
+                                              { (iconColor) ? ( 
 
-                                                <Icon icon={checkCircleFilled} style={{color:iconColor}} width={16} height={16} />
-                                                ) : (<span />)
-                                            }
-                                            {title}
-                                        </Typography>
-                                      
-                                    </AccordionSummary>
-                                    <AccordionDetails>
-                                      <Grid container>
-                                        <Grid item xs={6}>
-                                          <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Words in <span style={{color:'red'}}>red</span> matched with any category and in <span style={{color:'blue'}}>blue</span>  matched with any answer. </Typography> 
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Title:</Typography> 
-                                          <Typography>{title}</Typography>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Date:</Typography> 
-                                          <Typography>{publication_date}</Typography>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Abstract:</Typography> 
-                                          <p>
-                                          <Markup content={abstract} />
-                                          </p>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">DOI:</Typography> 
-                                          <Typography>{doi}</Typography>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Authors:</Typography> 
-                                          <Typography>{authors.join(', ')}</Typography>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Pages:</Typography> 
-                                          <Typography>{number_of_pages}</Typography>
-                                          <Typography style={{fontWeight: 'bold'}} variant="overline">Publication Type:</Typography> 
-                                          <Typography>{publication && publication.category}</Typography>
-                                        </Grid>
-                                        <Grid item xs={6}>
+                                                  <Icon icon={checkCircleFilled} style={{color:iconColor}} width={16} height={16} />
+                                                  ) : (<span />)
+                                              }
+                                              {` ${1+idx+(parseInt(rowsPerPage,10) * page)} - ${title}` }
+                                          </Typography>
+                                        
+                                      </AccordionSummary>
+                                      <AccordionDetails>
+                                        <Grid container>
+                                          <Grid item xs={6}>
+                                            <Typography variant="subtitle1" style={{fontSize:'0.7em', fontWeight:100}}>Words in <span style={{color:'red'}}>red</span> matched with any category and in <span style={{color:'blue'}}>blue</span>  matched with any answer. </Typography> 
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Id:</Typography> 
+                                            <Typography>{id}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Title:</Typography> 
+                                            <Typography>{title}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Date:</Typography> 
+                                            <Typography>{publication_date}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Abstract:</Typography> 
+                                            <p>
+                                            <Markup content={abstract} />
+                                            </p>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">DOI:</Typography> 
+                                            <Typography>{doi}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Authors:</Typography> 
+                                            <Typography>{authors.join(', ')}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Pages:</Typography> 
+                                            <Typography>{number_of_pages}</Typography>
+                                            <Typography style={{fontWeight: 'bold'}} variant="overline">Publication Type:</Typography> 
+                                            <Typography>{publication && publication.category}</Typography>
+                                          </Grid>
+                                          <Grid item xs={6}>
 
-                                          <Box pb={5} ml={5} pl={5} style={{borderLeft:"1px solid gray"}}>
-                                              <Grid container>
-                                                  <Grid item xs={2}>
-                                                      <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(id_search_result, id)}}>
-                                                          <ListItemIcon >
-                                                              <Tooltip title="Remove from results">
-                                                              <Icon icon={trash2Outline} width={24} height={24} />
-                                                              </Tooltip>
-                                                          </ListItemIcon>
-                                                      </MenuItem>
+                                            <Box pb={5} ml={5} pl={5} style={{borderLeft:"1px solid gray"}}>
+                                                <Grid container>
+                                                    <Grid item xs={2}>
+                                                        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{remove(id_search_result, id)}}>
+                                                            <ListItemIcon >
+                                                                <Tooltip title="Remove from results">
+                                                                <Icon icon={trash2Outline} width={24} height={24} />
+                                                                </Tooltip>
+                                                            </ListItemIcon>
+                                                        </MenuItem>
 
-                                                  </Grid>
-                                                  <Grid item xs={2}>
-                                                      <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{download(idx, id_search_result)}}>
-                                                          <ListItemIcon >
-                                                              <Tooltip title="Download this paper">
-                                                              <Icon icon={downloadOutlined} width={24} height={24} />
-                                                              </Tooltip>
-                                                          </ListItemIcon>
-                                                      </MenuItem>
+                                                    </Grid>
+                                                    <Grid item xs={2}>
+                                                        <MenuItem sx={{ color: 'text.primary' }} onClick={(event)=>{download(idx, id_search_result)}}>
+                                                            <ListItemIcon >
+                                                                <Tooltip title="Download this paper">
+                                                                <Icon icon={downloadOutlined} width={24} height={24} />
+                                                                </Tooltip>
+                                                            </ListItemIcon>
+                                                        </MenuItem>
 
-                                                  </Grid>
+                                                    </Grid>
 
 
-                                                  <Grid item xs={12}>
-                                                      <TextField
-                                                          style={{width:'200px'}}
-                                                          select
-                                                          name="categories"
-                                                          variant="outlined"
-                                                          label="categories"
-                                                          SelectProps={{
-                                                              multiple: true,
-                                                              value: selected_categories,
-                                                              onChange:(event)=>{handleChangeMultiple(event, id_search_result, id)} 
-                                                          }}
-                                                      >
-                                                          <MenuItem value="">-</MenuItem>
-                                                          {categories && categories.map((category) => 
-                                                                  <MenuItem value={category.id}>{category.name}</MenuItem>
-                                                          )
-                                                          }
-                                                      </TextField>
-                                                  </Grid>
-                                                  <Grid item xs={12}>
-                                                    {typeof questions !== "undefined" && questions.map(q => (
-                                                      <Grid container>
-                                                        <Grid item xs={12}>
-                                                          <Typography variant="overline">{q.description}</Typography>
+                                                    <Grid item xs={12}>
+                                                        <TextField
+                                                            style={{width:'200px'}}
+                                                            select
+                                                            name="categories"
+                                                            variant="outlined"
+                                                            label="categories"
+                                                            SelectProps={{
+                                                                multiple: true,
+                                                                value: selected_categories,
+                                                                onChange:(event)=>{handleChangeMultiple(event, id_search_result, id)} 
+                                                            }}
+                                                        >
+                                                            <MenuItem value="">-</MenuItem>
+                                                            {categories && categories.map((category) => 
+                                                                    <MenuItem value={category.id}>{category.name}</MenuItem>
+                                                            )
+                                                            }
+                                                        </TextField>
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                      {typeof questions !== "undefined" && questions.map(q => (
+                                                        <Grid container>
+                                                          <Grid item xs={12}>
+                                                            <Typography variant="overline">{q.description}</Typography>
+                                                          </Grid>
+                                                          <Grid item xs={12}>
+                                                            <TextField
+                                                                style={{width:'200px'}}
+                                                                select
+                                                                name="answers"
+                                                                variant="outlined"
+                                                                label="answer"
+                                                                SelectProps={{
+                                                                    value: selected_answers[q.id],
+                                                                    onChange:(event)=>{handleChangeAnswer(event, id_search_result, id, q.id)} 
+                                                                }}
+                                                            >
+                                                                <MenuItem value="">-</MenuItem>
+                                                                {answers && answers[q.id] && answers[q.id].map((answer) => 
+                                                                        <MenuItem value={answer.id}>{answer.description}</MenuItem>
+                                                                )
+                                                                }
+                                                            </TextField>
+                                                          </Grid>
                                                         </Grid>
-                                                        <Grid item xs={12}>
-                                                          <TextField
-                                                              style={{width:'200px'}}
-                                                              select
-                                                              name="answers"
-                                                              variant="outlined"
-                                                              label="answer"
-                                                              SelectProps={{
-                                                                  value: selected_answers[q.id],
-                                                                  onChange:(event)=>{handleChangeAnswer(event, id_search_result, id, q.id)} 
-                                                              }}
-                                                          >
-                                                              <MenuItem value="">-</MenuItem>
-                                                              {answers && answers[q.id] && answers[q.id].map((answer) => 
-                                                                      <MenuItem value={answer.id}>{answer.description}</MenuItem>
-                                                              )
-                                                              }
-                                                          </TextField>
-                                                        </Grid>
-                                                      </Grid>
-                                                    ))}
-                                                  </Grid>
-                                              </Grid>
-                                          </Box>
-                                        </Grid>
-                                      </Grid>  
-                                    </AccordionDetails>
-                                
-                                </Accordion>
+                                                      ))}
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                          </Grid>
+                                        </Grid>  
+                                      </AccordionDetails>
+                                  
+                                  </Accordion>
+                                </div>
 
 
                         
