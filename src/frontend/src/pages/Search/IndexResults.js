@@ -153,7 +153,16 @@ const Searchs = (props) => {
   },[controlQuestion]); 
 
   const handleChangeMultiple = (event,id_search_result,id) => {
-    api.put(`searchresult/${id_search_result}/${id}?selected=${event.target.value.join(',')}`,'backend').then(res=>{
+    let optionsInt = event.target.value.map(o=>parseInt(o,10))
+    const thisOption = optionsInt.pop()
+    if (optionsInt.includes(thisOption)){
+        delete optionsInt[optionsInt.indexOf(thisOption)]
+    } else {
+        optionsInt.push(thisOption)
+    }
+    optionsInt = optionsInt.filter(o=>o!==null && o!=='NaN')
+    const options = optionsInt.join(',')
+    api.put(`searchresult/${id_search_result}/${id}?selected=${options}`,'backend').then(res=>{
         setControl(!control)
       }).catch(e=>{
         props.showMessageError(`Request failed ${e}`)
@@ -248,6 +257,8 @@ const Searchs = (props) => {
                       const { id, id_search_result, publication_date, title, doi, authors, number_of_pages, publication} = row;
                       let iconColor = false
                       let { selected_categories, selected_answers, abstract} = row;
+                      selected_categories = [...new Set(selected_categories)]
+
                       if (!selected_categories){
                         selected_categories = []
                       } 
