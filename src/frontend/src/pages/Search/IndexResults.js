@@ -278,7 +278,7 @@ const Searchs = (props) => {
                         })
                       }
 
-                      if (questions && abstract){
+                      if (questions && title){
                         let countAnswers = 0
                         const tmp = questions.map(q=>{
                             if (answers[q.id]){
