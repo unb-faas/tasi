@@ -282,8 +282,19 @@ const Searchs = (props) => {
                         })
                       }
 
+                      let countAnswers = 0
+                      const tmp = questions.map(q=>{
+                        if (selected_answers[q.id]){
+                            iconColor = 'orange'
+                            countAnswers += 1
+                        }
+                        return q
+                      })
+                      if (countAnswers>0 && countAnswers >= questions.length){
+                        iconColor = 'green'
+                      }
+
                       if (questions && abstract){
-                        let countAnswers = 0
                         const tmp = questions.map(q=>{
                             if (answers[q.id]){
                                 const tmp2 = answers[q.id].map(a=>{
@@ -291,15 +302,8 @@ const Searchs = (props) => {
                                                                        return a
                                 })
                             }
-                            if (selected_answers[q.id]){
-                                iconColor = 'orange'
-                                countAnswers += 1
-                            }
                             return q
                         })
-                        if (countAnswers>0 && countAnswers >= questions.length){
-                            iconColor = 'green'
-                        }
                       }
 
                       return (
