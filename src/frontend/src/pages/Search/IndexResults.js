@@ -293,7 +293,7 @@ const Searchs = (props) => {
                             }
                             return q
                         })
-                        if (countAnswers>0 && countAnswers === questions.length){
+                        if (countAnswers>0 && countAnswers <= questions.length){
                             iconColor = 'green'
                         }
                       }
