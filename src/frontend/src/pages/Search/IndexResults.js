@@ -259,6 +259,10 @@ const Searchs = (props) => {
                       let { selected_categories, selected_answers, abstract} = row;
                       selected_categories = [...new Set(selected_categories)]
 
+                      if (!abstract){
+                        abstract = ""
+                      }
+
                       if (!selected_categories){
                         selected_categories = []
                       } 
@@ -278,7 +282,7 @@ const Searchs = (props) => {
                         })
                       }
 
-                      if (questions && title){
+                      if (questions && abstract){
                         let countAnswers = 0
                         const tmp = questions.map(q=>{
                             if (answers[q.id]){
