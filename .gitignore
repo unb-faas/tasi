@@ -12,3 +12,4 @@ swagger-temp.json
 data
 .env
 .DS_Store
+node_modules

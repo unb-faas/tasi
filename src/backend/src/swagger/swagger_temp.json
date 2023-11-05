@@ -1,0 +1,1509 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Tasi Backend API",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "host": "localhost:4001/backend",
+  "basePath": "/api/v1/",
+  "tags": [],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [],
+  "produces": [],
+  "paths": {
+    "/info": {
+      "get": {
+        "tags": [
+          "Tools"
+        ],
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          }
+        }
+      }
+    },
+    "/wordreplace": {
+      "get": {
+        "tags": [
+          "Word Replace"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Word Replace"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "example": ""
+                },
+                "replace": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/wordreplace/{id}": {
+      "get": {
+        "tags": [
+          "Word Replace"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Word Replace"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "target": {
+                  "type": "string",
+                  "example": ""
+                },
+                "replace": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Word Replace"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/wordfilter": {
+      "get": {
+        "tags": [
+          "Word Filter"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Word Filter"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "word": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/wordfilter/{id}": {
+      "get": {
+        "tags": [
+          "Word Filter"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Word Filter"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "word": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Word Filter"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchdatabase": {
+      "get": {
+        "tags": [
+          "Search Database"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Search Database"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": ""
+                },
+                "credentials": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchdatabase/{id}": {
+      "get": {
+        "tags": [
+          "Search Database"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Search Database"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": ""
+                },
+                "credentials": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Search Database"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "example": ""
+                },
+                "string": {
+                  "type": "string",
+                  "example": ""
+                },
+                "since": {
+                  "type": "string",
+                  "example": "2014-01-01"
+                },
+                "until": {
+                  "type": "string",
+                  "example": "2022-12-31"
+                },
+                "search_databases": {
+                  "type": "object",
+                  "properties": {
+                    "ids": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search/{id}": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "example": ""
+                },
+                "string": {
+                  "type": "string",
+                  "example": ""
+                },
+                "since": {
+                  "type": "string",
+                  "example": "2014-01-01"
+                },
+                "until": {
+                  "type": "string",
+                  "example": "2022-12-31"
+                },
+                "search_databases": {
+                  "type": "object",
+                  "properties": {
+                    "ids": {
+                      "type": "array",
+                      "example": [],
+                      "items": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search/{id}/play": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search/{id}/downloadPDF": {
+      "post": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search/{id}/executions": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/search/{id}/results": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchexecution/{id}": {
+      "delete": {
+        "tags": [
+          "Search Execution"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchresult": {
+      "get": {
+        "tags": [
+          "Search Result"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchresult/{id}": {
+      "get": {
+        "tags": [
+          "Search Result"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchresult/{id}/replay": {
+      "get": {
+        "tags": [
+          "Search Result"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchresult/{id_search_result}/{id}": {
+      "put": {
+        "tags": [
+          "Search Result"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id_search_result",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "categories": {
+                  "type": "array",
+                  "example": [],
+                  "items": {}
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Search Result"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id_search_result",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/category": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Category"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/category/{id}": {
+      "get": {
+        "tags": [
+          "Category"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Category"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Category"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchquestion": {
+      "get": {
+        "tags": [
+          "Search Question"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filterSearch",
+            "description": "filterSearch",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Search Question"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_search": {
+                  "type": "string",
+                  "example": ""
+                },
+                "description": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchquestion/{id}": {
+      "get": {
+        "tags": [
+          "Search Question"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Search Question"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_search": {
+                  "type": "string",
+                  "example": ""
+                },
+                "description": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Search Question"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchquestionanswer": {
+      "get": {
+        "tags": [
+          "Search Question Answer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "page",
+            "description": "page",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "description": "size",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filterSearchQuestion",
+            "description": "filterSearchQuestion",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Search Question Answer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_search_question": {
+                  "type": "string",
+                  "example": ""
+                },
+                "description": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    },
+    "/searchquestionanswer/{id}": {
+      "get": {
+        "tags": [
+          "Search Question Answer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Search Question Answer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "body",
+            "type": "object",
+            "description": "update object",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id_search_question": {
+                  "type": "string",
+                  "example": ""
+                },
+                "description": {
+                  "type": "string",
+                  "example": ""
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Search Question Answer"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Error on server"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {}
+}

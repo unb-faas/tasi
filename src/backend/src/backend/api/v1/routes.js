@@ -744,6 +744,14 @@ module.exports = (app) => {
          */
      )
      
+  /*******************************************
+  *         FaaS - Verify repeat papers
+  ********************************************/
+  router.route('/aws').get(app.controllers.CheckPapersController.getListPapersAws)
+  router.route('/google').get(app.controllers.CheckPapersController.getListPapersGoogle)
+  router.route('/azure').get(app.controllers.CheckPapersController.getListPapersAzure)
+  router.route('/digitalocean').get(app.controllers.CheckPapersController.getListPapersDigitalocean)
+  router.route('/checkpapers').get(app.controllers.CheckPapersController.localCheckPapers)
 
   app.use(app.basePath, router);
 };
