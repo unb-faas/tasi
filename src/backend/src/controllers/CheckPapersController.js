@@ -35,7 +35,7 @@ module.exports = (app) => {
         try {
             const {data} = req.body
             console.log("Artigos enviados: ", data.length)
-            const url = 'https://checkduplicatepapers.azurewebsites.net/api/HttpTrigger1?code=M61lLSNh_U-biYRY6iHfZv5wbJTVzb2INHBmdCcmquMXAzFuJ3La9w=='
+            const url = 'https://checkduplicatepapers.azurewebsites.net/api/HttpTrigger1?code=fN8jmcyqhUYffzfmOYIFkbEu22pxLq_WYAvKALYItVzGAzFui1e69A=='
             const response = await axios.post(url, data, {
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -46,7 +46,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getListPapersDigitalocean = async (req, res) => {
+    /*const getListPapersDigitalocean = async (req, res) => {
         try {
             const {data} = req.body
             const dataToSend = {
@@ -64,7 +64,7 @@ module.exports = (app) => {
         } catch (error) {
             return res.status(500).json(`Error: ${error}`)
         }
-    };
+    };*/
     const localCheckPapers = (req, res) => {
         try {
             const {data} = req.body
@@ -82,7 +82,7 @@ module.exports = (app) => {
         getListPapersAws,
         getListPapersGoogle,
         getListPapersAzure,
-        getListPapersDigitalocean,
+        //getListPapersDigitalocean,
         localCheckPapers
     }
 };

@@ -750,8 +750,15 @@ module.exports = (app) => {
   router.route('/aws').get(app.controllers.CheckPapersController.getListPapersAws)
   router.route('/google').get(app.controllers.CheckPapersController.getListPapersGoogle)
   router.route('/azure').get(app.controllers.CheckPapersController.getListPapersAzure)
-  router.route('/digitalocean').get(app.controllers.CheckPapersController.getListPapersDigitalocean)
+  //router.route('/digitalocean').get(app.controllers.CheckPapersController.getListPapersDigitalocean)
   router.route('/checkpapers').get(app.controllers.CheckPapersController.localCheckPapers)
+
+  /*******************************************
+  *         FaaS - Verify repeat papers
+  ********************************************/
+  router.route('/metrics/aws').get(app.controllers.MetricsPapersController.getMetricsPapersAws)
+  router.route('/metrics/google').get(app.controllers.MetricsPapersController.getMetricsPapersGoogle)
+  router.route('/metrics/local').get(app.controllers.MetricsPapersController.getMetricsPapersLocal)
 
   app.use(app.basePath, router);
 };
