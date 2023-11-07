@@ -46,25 +46,6 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    /*const getListPapersDigitalocean = async (req, res) => {
-        try {
-            const {data} = req.body
-            const dataToSend = {
-                papers: data
-            };
-            const url = 'https://faas-nyc1-2ef2e6cc.doserverless.co/api/v1/web/fn-72e3186e-a5ae-4dd8-8890-8c9ab664dcb7/default/verify_papers'
-            const response = await axios.post(url, dataToSend, {
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ODgzN2Q0OGMtYzgyMS00OWFlLWFmNDgtMDQ4MDQzMGY4MTk5OmVXcjZFbklXVnR6b24wcWRsT2FaM2s5UGlPT3V0cFUxSDQyejQ5ZlVaMWxGTjhaSlkzZU1oVW9KSUk3Z2h4cVo='
-                },
-            });
-            const responseJson = await response.data
-            return res.status(200).json(responseJson)
-        } catch (error) {
-            return res.status(500).json(`Error: ${error}`)
-        }
-    };*/
     const localCheckPapers = (req, res) => {
         try {
             const {data} = req.body
@@ -82,7 +63,6 @@ module.exports = (app) => {
         getListPapersAws,
         getListPapersGoogle,
         getListPapersAzure,
-        //getListPapersDigitalocean,
         localCheckPapers
     }
 };

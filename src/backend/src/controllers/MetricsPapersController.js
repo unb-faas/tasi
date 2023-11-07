@@ -28,6 +28,19 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
+    const getMetricsPapersAzure = async (req, res) => {
+        try {
+            const {data} = req.body
+            const url = 'https://metricspapers.azurewebsites.net/api/HttpTrigger1?code=rQOmIO2lenf1aqUk3zg1aNsEX2OQblEMHcC6ULYl-enfAzFur6IHtg=='
+            const response = await axios.post(url, data, {
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const responseJson = await response.data
+            return res.status(200).json(responseJson)
+        } catch (error) {
+            return res.status(500).json(`Error: ${error}`)
+        }
+    };
     const getMetricsPapersLocal = async (req, res) => {
         try{
             const {data} = req.body
@@ -90,6 +103,7 @@ module.exports = (app) => {
     return{
         getMetricsPapersAws,
         getMetricsPapersGoogle,
+        getMetricsPapersAzure,
         getMetricsPapersLocal
     }
 }

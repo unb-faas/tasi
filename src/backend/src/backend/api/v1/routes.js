@@ -754,10 +754,11 @@ module.exports = (app) => {
   router.route('/checkpapers').get(app.controllers.CheckPapersController.localCheckPapers)
 
   /*******************************************
-  *         FaaS - Verify repeat papers
+  *         FaaS - metrics papers
   ********************************************/
   router.route('/metrics/aws').get(app.controllers.MetricsPapersController.getMetricsPapersAws)
   router.route('/metrics/google').get(app.controllers.MetricsPapersController.getMetricsPapersGoogle)
+  router.route('/metrics/azure').get(app.controllers.MetricsPapersController.getMetricsPapersAzure)
   router.route('/metrics/local').get(app.controllers.MetricsPapersController.getMetricsPapersLocal)
 
   app.use(app.basePath, router);
