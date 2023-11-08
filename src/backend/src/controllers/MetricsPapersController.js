@@ -2,7 +2,7 @@ const axios = require('axios');
 const natural = require('natural');
 
 module.exports = (app) => {
-    const getMetricsPapersAws = async (req, res) => {
+    const postMetricsPapersAws = async (req, res) => {
         try {
             const {data} = req.body
             const url = 'https://ezq21t35h9.execute-api.us-east-2.amazonaws.com/metrics'
@@ -15,7 +15,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getMetricsPapersGoogle = async (req, res) => {
+    const postMetricsPapersGoogle = async (req, res) => {
         try {
             const {data} = req.body
             const url = 'https://southamerica-east1-shaped-icon-390417.cloudfunctions.net/metricsPapers'
@@ -28,7 +28,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getMetricsPapersAzure = async (req, res) => {
+    const postMetricsPapersAzure = async (req, res) => {
         try {
             const {data} = req.body
             const url = 'https://metricspapers.azurewebsites.net/api/HttpTrigger1?code=rQOmIO2lenf1aqUk3zg1aNsEX2OQblEMHcC6ULYl-enfAzFur6IHtg=='
@@ -41,7 +41,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getMetricsPapersLocal = async (req, res) => {
+    const postMetricsPapersLocal = async (req, res) => {
         try{
             const {data} = req.body
             const stopWords = [
@@ -101,9 +101,9 @@ module.exports = (app) => {
         }
     };
     return{
-        getMetricsPapersAws,
-        getMetricsPapersGoogle,
-        getMetricsPapersAzure,
-        getMetricsPapersLocal
+        postMetricsPapersAws,
+        postMetricsPapersGoogle,
+        postMetricsPapersAzure,
+        postMetricsPapersLocal
     }
 }

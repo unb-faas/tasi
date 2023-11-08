@@ -747,19 +747,18 @@ module.exports = (app) => {
   /*******************************************
   *         FaaS - Verify repeat papers
   ********************************************/
-  router.route('/aws').get(app.controllers.CheckPapersController.getListPapersAws)
-  router.route('/google').get(app.controllers.CheckPapersController.getListPapersGoogle)
-  router.route('/azure').get(app.controllers.CheckPapersController.getListPapersAzure)
-  //router.route('/digitalocean').get(app.controllers.CheckPapersController.getListPapersDigitalocean)
-  router.route('/checkpapers').get(app.controllers.CheckPapersController.localCheckPapers)
+  router.route('/aws').post(app.controllers.CheckPapersController.postListPapersAws)
+  router.route('/google').post(app.controllers.CheckPapersController.postListPapersGoogle)
+  router.route('/azure').post(app.controllers.CheckPapersController.postListPapersAzure)
+  router.route('/checkpapers').post(app.controllers.CheckPapersController.localCheckPapers)
 
   /*******************************************
   *         FaaS - metrics papers
   ********************************************/
-  router.route('/metrics/aws').get(app.controllers.MetricsPapersController.getMetricsPapersAws)
-  router.route('/metrics/google').get(app.controllers.MetricsPapersController.getMetricsPapersGoogle)
-  router.route('/metrics/azure').get(app.controllers.MetricsPapersController.getMetricsPapersAzure)
-  router.route('/metrics/local').get(app.controllers.MetricsPapersController.getMetricsPapersLocal)
+  router.route('/metrics/aws').post(app.controllers.MetricsPapersController.postMetricsPapersAws)
+  router.route('/metrics/google').post(app.controllers.MetricsPapersController.postMetricsPapersGoogle)
+  router.route('/metrics/azure').post(app.controllers.MetricsPapersController.postMetricsPapersAzure)
+  router.route('/metrics/local').post(app.controllers.MetricsPapersController.postMetricsPapersLocal)
 
   app.use(app.basePath, router);
 };

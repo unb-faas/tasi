@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 module.exports = (app) => {
-    const getListPapersAws = async (req, res) => {
+    const postListPapersAws = async (req, res) => {
         try {
             const {data} = req.body
             console.log("Artigos enviados: ", data.length)
@@ -16,7 +16,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getListPapersGoogle = async (req, res) => {
+    const postListPapersGoogle = async (req, res) => {
         try {
             const {data} = req.body
             console.log("Artigos enviados: ", data.length)
@@ -31,7 +31,7 @@ module.exports = (app) => {
             return res.status(500).json(`Error: ${error}`)
         }
     };
-    const getListPapersAzure = async (req, res) => {
+    const postListPapersAzure = async (req, res) => {
         try {
             const {data} = req.body
             console.log("Artigos enviados: ", data.length)
@@ -60,9 +60,9 @@ module.exports = (app) => {
         }
     };
     return{
-        getListPapersAws,
-        getListPapersGoogle,
-        getListPapersAzure,
+        postListPapersAws,
+        postListPapersGoogle,
+        postListPapersAzure,
         localCheckPapers
     }
 };
